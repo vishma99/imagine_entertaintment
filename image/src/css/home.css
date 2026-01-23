@@ -1,0 +1,61 @@
+/* Container styling to center the content */
+.home-container {
+  min-height: 70vh; /* Adjusts height between Navbar and Footer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  background-color: #f2f2f2;
+  margin-top: 80px;
+}
+.home-contact {
+  background-color: #fff;
+  border-radius: 30px;
+  padding: 40px 70px;
+}
+
+/* Big Title Styling */
+.home-title {
+  font-size: 4rem;
+  color: #1e40af; /* Matches your brand blue */
+  margin-bottom: 3rem;
+  font-weight: 500;
+}
+
+/* Grid Layout for the 4 Buttons */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns like your UI */
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Individual Card (Button) Styling */
+.grid-card {
+  background-color: #6b7280; /* Grey color from HomePage.png */
+  color: #000000;
+  border: none;
+  border-radius: 12px;
+  padding: 4rem 2rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.grid-card:hover {
+  background-color: #4b5563; /* Darker grey on hover */
+  transform: translateY(-5px); /* Subtle lift effect */
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-title {
+    font-size: 2.5rem;
+  }
+}

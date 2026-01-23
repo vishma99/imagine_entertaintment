@@ -1,0 +1,80 @@
+/* Main Footer Background and Spacing */
+.footer-container {
+  background-color: #1e40af; /* Deep blue matching your design */
+  color: #ffffff;
+  padding: 3rem 2rem;
+}
+
+/* Centralizing the content */
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Brand Section with Logo and Text */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.footer-logo-circle {
+  height: 64px;
+  width: 64px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-icon {
+  font-size: 1.875rem;
+}
+
+.footer-title {
+  font-size: 2.25rem;
+  font-weight: bold;
+  font-style: italic;
+  margin: 0;
+}
+
+.footer-slogan {
+  font-size: 1.125rem;
+  font-style: italic;
+  color: #e5e7eb; /* Light gray text */
+  margin: 0;
+}
+
+/* Navigation Links */
+.footer-links {
+  display: flex;
+  gap: 3rem;
+  margin-top: 2rem;
+  font-size: 1.125rem;
+}
+
+.footer-link-item {
+  color: #ffffff;
+  text-decoration: none;
+  transition: text-decoration 0.2s;
+}
+
+.footer-link-item:hover {
+  text-decoration: underline;
+}
+
+.active-footer-link {
+  border-bottom: 2px solid #ffffff;
+}
+
+/* Copyright Text */
+.footer-copyright {
+  margin-top: 3rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}

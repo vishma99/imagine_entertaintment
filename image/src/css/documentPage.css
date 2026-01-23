@@ -1,0 +1,39 @@
+.doc-page {
+  padding: 30px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.doc-page h1 {
+  margin-bottom: 20px;
+  color: rgb(30, 41, 59);
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.doc-table th,
+.doc-table td {
+  padding: 14px 18px;
+  text-align: left;
+  border: 1px solid gray;
+}
+
+.doc-table th {
+  background-color: rgb(96, 165, 250);
+  color: white;
+  font-weight: 600;
+}
+
+.doc-table tr:nth-child(even) {
+  background-color: rgb(245, 248, 252);
+}
+
+.doc-table tr:hover {
+  background-color: rgb(232, 240, 249);
+}

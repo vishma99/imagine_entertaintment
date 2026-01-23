@@ -1,0 +1,100 @@
+.missing-container {
+  background-color: #f8fafc;
+  padding: 120px 20px 60px 20px; /* Top padding for fixed navbar */
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.missing-header-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #000;
+}
+
+.missing-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.missing-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #000;
+}
+
+.missing-table th,
+.missing-table td {
+  border: 1px solid #000;
+  padding: 15px 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.table-top-header,
+.table-sub-header {
+  background-color: #7d8da1; /* Grey header color from your UI */
+  color: #000;
+}
+
+/* Cell specific styling */
+.date-display {
+  background-color: #f1f5f9;
+}
+
+.empty-row td {
+  height: 60px;
+  background-color: #e2e8f0; /* Light blue alternate rows */
+}
+
+/* Scan Button Styles */
+.scan-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.led-btn {
+  background-color: #ef4444; /* Red button for LED category */
+}
+
+.blue-btn {
+  background-color: #1e40af; /* Blue button for others */
+}
+
+.scan-btn:hover {
+  opacity: 0.8;
+}
+.missing-red-btn {
+  background-color: #ec0404;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.missing-red-btn:hover {
+  background-color: #ba0303;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(236, 4, 4, 0.4);
+}
+
+.date-display {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+
+

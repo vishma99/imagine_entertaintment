@@ -1,0 +1,436 @@
+/* --- PAGE LAYOUT --- */
+.pending-page {
+  background-color: #f8fafc;
+  padding: 120px 20px 60px 20px; /* Space for fixed Navbar */
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-header {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #000;
+}
+
+/* --- TABLE STYLING --- */
+.table-container {
+  width: 100%;
+  max-width: 1400px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #000;
+}
+
+.events-table th,
+.events-table td {
+  border: 1px solid #000;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.main-header,
+.sub-header {
+  background-color: #7d8da1; /* Grey header from design */
+  color: #000;
+}
+
+.date-cell {
+  background-color: #f1f5f9;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* --- ROW INTERACTIVITY --- */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #f1f5f9; /* Highlights row on hover */
+}
+
+/* --- BUTTONS & BADGES --- */
+.scan-btn {
+  background-color: #1e40af; /* Brand Blue */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 15px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.scan-btn:hover {
+  background-color: #1e3a8a;
+}
+
+.status-badge {
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* --- MODAL (POP-UP) STYLING --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-box {
+  background: white;
+  width: 90%;
+  max-width: 550px; /* Slightly wider for date/time pairs */
+  padding: 30px;
+  border-radius: 24px;
+  border: 3px solid #000;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  animation: modalPop 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-box h2 {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: #1e40af;
+  text-align: center;
+  border-bottom: 2px solid #000;
+  padding-bottom: 10px;
+}
+
+/* --- FORM COMPONENTS --- */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+/* --- DATE & TIME INPUT ROW --- */
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.input-row input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+/* --- CATEGORY CHECKBOX GRID --- */
+.category-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 10px;
+  background: #f1f5f9;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #000;
+}
+
+.checkbox-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* --- MODAL ACTIONS --- */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.update-btn {
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn {
+  background-color: #7d8da1;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.update-btn:hover {
+  background-color: #1e3a8a;
+}
+.close-btn:hover {
+  background-color: #64748b;
+}
+/* Custom Success Pop-up Styles for Pending Page */
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+  backdrop-filter: blur(8px);
+}
+
+.success-modal {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  background: #22c55e;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-icon {
+  width: 30px;
+  height: 15px;
+  border-left: 5px solid white;
+  border-bottom: 5px solid white;
+  transform: rotate(-45deg);
+  margin-bottom: 5px;
+}
+
+.success-btn {
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+/* Styling for the New Separate Status Modal */
+.status-update-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.status-icon-header {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.status-selection-box {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.status-dropdown-select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  font-weight: 600;
+  background: #f8fafc;
+}
+
+.modal-actions-horizontal {
+  display: flex;
+  gap: 10px;
+}
+
+.update-status-btn {
+  flex: 2;
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancel-status-btn {
+  flex: 1;
+  background: #e2e8f0;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Specific Badge cursor to show it's clickable */
+.status-badge {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.status-badge:hover {
+  transform: scale(1.1);
+}
+/* Normal Scan Button */
+.scan-btn {
+  background-color: #1e40af; /* Blue */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.scan-btn:hover {
+  background-color: #1e3a8a;
+}
+
+/* Yellow Return Button */
+.return-btn {
+  background-color: #fbbf24; /* Yellow/Amber */
+  color: #000; /* Black text for contrast */
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.3s;
+}
+
+.return-btn:hover {
+  background-color: #f59e0b; /* Darker yellow */
+}
+.missing-btn {
+  border-radius: 5px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #ef4444, #dc2626); /* Soft modern red */
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.missing-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+.success-btn {
+  background: linear-gradient(
+    135deg,
+    #065f46,
+    #064e3b
+  ); /* Elegant dark green */
+  color: #ffffff;
+  border: none;
+  cursor: default; /* Not clickable once finished */
+  box-shadow: 0 2px 4px rgba(6, 78, 59, 0.3);
+  opacity: 1;
+}
+
+/* Ensure common class exists */
+.category-btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  min-width: 90px;
+  transition: all 0.3s ease;
+}

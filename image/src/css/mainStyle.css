@@ -1,0 +1,57 @@
+/* Page background */
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(
+    circle at center,
+    rgb(245, 248, 252),
+    rgb(232, 237, 243)
+  );
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* Main white card */
+.main-card {
+  width: 70%;
+  max-width: 900px;
+  padding: 70px 40px;
+  background: linear-gradient(180deg, rgb(255, 255, 255), rgb(245, 248, 252));
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Inner bordered box */
+.inner-box {
+  padding: 40px 60px;
+  border: 2px solid rgb(96, 165, 250);
+  border-radius: 12px;
+  text-align: center;
+  background: linear-gradient(180deg, rgb(248, 251, 255), rgb(235, 242, 250));
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.inner-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(96, 165, 250, 0.25);
+  border-color: rgb(59, 130, 246);
+}
+
+/* Title text */
+.inner-box h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: rgb(30, 41, 59);
+}
+
+/* Icon */
+/* .icon {
+  margin-top: 18px;
+  font-size: 22px;
+  color: rgb(96, 165, 250);
+} */
