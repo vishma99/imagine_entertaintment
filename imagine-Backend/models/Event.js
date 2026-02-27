@@ -31,6 +31,39 @@ const eventSchem = new mongoose.Schema(
       light: { type: Boolean, default: false },
       sound: { type: Boolean, default: false },
       stage: { type: Boolean, default: false },
+      truss: { type: Boolean, default: false },
+    },
+    operators: {
+      led: {
+        Supervisor: [String],
+        Operator: [String],
+        Labors: [String],
+        Other: [String],
+      },
+      light: {
+        Supervisor: [String],
+        Operator: [String],
+        Labors: [String],
+        Other: [String],
+      },
+      sound: {
+        Supervisor: [String],
+        Operator: [String],
+        Labors: [String],
+        Other: [String],
+      },
+      stage: {
+        Supervisor: [String],
+        Operator: [String],
+        Labors: [String],
+        Other: [String],
+      },
+      truss: {
+        Supervisor: [String],
+        Operator: [String],
+        Labors: [String],
+        Other: [String],
+      },
     },
     equipmentList: [
       {
@@ -43,6 +76,8 @@ const eventSchem = new mongoose.Schema(
     ],
     setupDate: { type: String },
     setupTime: { type: String },
+    rehearsalDate: { type: String },
+    rehearsalTime: { type: String },
     eventDate: { type: String },
     eventTime: { type: String },
     endDate: { type: String },

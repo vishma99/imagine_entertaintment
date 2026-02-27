@@ -12,7 +12,7 @@
   font-size: 3rem;
   font-weight: bold;
   margin-bottom: 40px;
-  color: #000;
+  color: #1e3c72;
 }
 
 /* --- TABLE STYLING --- */
@@ -433,4 +433,207 @@
   font-weight: bold;
   min-width: 90px;
   transition: all 0.3s ease;
+}
+.member-btn {
+  cursor:;
+}
+.member-btn:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.disabled-badge {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+/* --- RESPONSIVE DESIGN --- */
+
+/* මධ්‍යම ප්‍රමාණයේ තිර සඳහා (Tablets) */
+@media screen and (max-width: 1024px) {
+  .page-header {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .table-container {
+    padding: 10px;
+    border-radius: 10px;
+  }
+}
+
+/* කුඩා තිර සඳහා (Mobile Phones) */
+@media screen and (max-width: 768px) {
+  .pending-page {
+    padding: 100px 10px 40px 10px; /* Navbar එකට ඉඩ තැබීම */
+  }
+
+  .page-header {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  /* Table එක Scroll වීමට ඉඩ සැලසීම */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Mobile Smooth Scroll */
+  }
+
+  .events-table th,
+  .events-table td {
+    padding: 8px 5px;
+    font-size: 0.75rem; /* අකුරු කුඩා කිරීම */
+    min-width: 100px; /* Cell එකක් ඉතා කුඩා වීම වැළැක්වීමට */
+  }
+
+  /* Categories සහ Date cells සඳහා විශේෂ පළලක් */
+  .date-cell {
+    min-width: 120px;
+  }
+
+  /* Modal එක Mobile එකට ගැලපීම */
+  .modal-box,
+  .status-update-modal,
+  .op-modal {
+    width: 95%;
+    padding: 20px;
+    margin: 10px;
+  }
+
+  /* Form එක ඇතුළේ Date/Time පේළි දෙකකට කැඩීම */
+  .input-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .category-edit-grid {
+    grid-template-columns: 1fr; /* එක් පේළියකට එක Category එක බැගින් */
+  }
+
+  /* Buttons කුඩා කිරීම */
+  .member-btn,
+  .update-status-btn {
+    width: 100% !important; /* Mobile එකේදී බොත්තම සම්පූර්ණ පළලට */
+    font-size: 0.75rem;
+  }
+}
+
+/* ඉතා කුඩා තිර සඳහා (Small Mobile) */
+@media screen and (max-width: 480px) {
+  .page-header {
+    font-size: 1.2rem;
+  }
+
+  .success-modal {
+    padding: 20px;
+  }
+}
+.events-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #7d8da1;
+}
+
+.sub-header th {
+  top: 40px; /* ප්‍රධාන header එකට යටින් දෙවැනි එක තබා ගැනීමට */
+}
+/* සියලුම සෛල වලට (Header සහ Body) ස්ථාවර උසක් ලබා දීම */
+.events-table th,
+.events-table td {
+  height: 60px; /* ඔබට අවශ්‍ය උස මෙතනින් වෙනස් කරන්න */
+  min-height: 60px;
+  max-height: 60px;
+  padding: 0 8px; /* Vertical padding ඉවත් කර තිරස් අතට පමණක් තැබීම */
+  vertical-align: middle; /* අකුරු මැදට තැබීම */
+  overflow: hidden; /* අකුරු වැඩි වුවහොත් පේළිය විශාල වීම වැළැක්වීමට */
+  white-space: nowrap; /* අකුරු පේළි දෙකකට යාම වැළැක්වීමට (අවශ්‍ය නම් පමණක්) */
+  text-overflow: ellipsis; /* අකුරු වැඩි නම් තිත් (...) පෙන්වීමට */
+}
+
+/* Header එක සඳහා විශේෂිත උසක් (Header එකේ row span ඇති නිසා මෙය වැදගත්) */
+.events-table tr {
+  height: 60px;
+}
+
+/* Date cell ඇතුළත ඇති div වල උස පාලනය */
+.date-cell div {
+  line-height: 1.2;
+  font-size: 0.7rem; /* අකුරු කුඩා කර එකම පේළියක තබා ගැනීමට */
+}
+
+/* Button එක සෛලය ඇතුළත හරියටම මැදට ගැනීමට */
+.events-table td button {
+  margin: 0 auto;
+  display: block;
+}
+.table-container {
+  max-height: 480px; /* පේළි 6 කට ආසන්න ප්‍රමාණයක් */
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* ඇතුළතින් මඳ සෙවනැල්ලක් */
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+/* --- TABLE CONTAINER --- */
+.table-container {
+  width: 100%;
+  max-width: 1400px;
+  background: #ffffff;
+  padding: 0; /* Padding 0 කිරීමෙන් Header එක දාරයටම ඇලී පවතී */
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* උස පාලනය - පේළි 6ක් පමණ පෙන්වීමට */
+  max-height: 500px;
+  overflow-y: auto; /* සිරස් අතට scroll වීමට */
+  overflow-x: auto; /* තිරස් අතට scroll වීමට */
+  position: relative;
+  border: 1px solid #000;
+}
+
+/* --- TABLE STYLING --- */
+.events-table {
+  width: 100%;
+  border-collapse: separate; /* මෙය අනිවාර්යයි Sticky වැඩ කිරීමට */
+  border-spacing: 0;
+}
+
+/* --- STICKY HEADER LOGIC --- */
+/* පළමු Header පේළිය (Company Name, Date & Time, etc.) */
+.events-table thead th {
+  position: sticky;
+  top: 0; /* උඩටම ඇලවීම */
+  z-index: 100;
+  background-color: #7d8da1;
+  color: #000;
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+}
+
+/* දෙවැනි Header පේළිය (Setup, Rehearsal, LED, etc.) */
+/* මෙය පළමු පේළියේ උසට (උදා: 40px) යටින් ඇලවිය යුතුය */
+.events-table thead tr.sub-header th {
+  top: 40px;
+  z-index: 99;
+}
+
+/* සෛල (Cells) සඳහා Border ලබා දීම */
+.events-table td {
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  padding: 10px 5px;
+  text-align: center;
+  background-color: #fff; /* Scroll වන විට අකුරු එකපිට නොපෙනීමට */
+}
+
+/* අන්තිම පේළියේ Border එක නිවැරදි කිරීම */
+.events-table tr:last-child td {
+  border-bottom: none;
+}
+.sticky-thead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }

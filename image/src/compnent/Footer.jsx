@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="footer-content">
         {/* Branding Section */}
         <div className="footer-brand">
-          <img src="./public/image/logo/logo.jpg" alt="" />
+          <img src="/image/logo/logo.jpg" alt="" />
           <div className="footer-text">
             <h2 className="footer-title">Imagine Entertainment</h2>
             <p className="footer-slogan">"We give you the best"</p>

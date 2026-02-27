@@ -62,6 +62,7 @@ const Summary = () => {
       "Category",
       "Status",
       "Setup Date/Time",
+      "Rehearsal Date/Time",
       "Event Date/Time",
       "End Date/Time",
     ];
@@ -70,6 +71,7 @@ const Summary = () => {
         "LED",
         getCategoryStatus(event, "led"),
         `${event.setupDate} ${event.setupTime}`,
+        `${event.rehearsalDate} ${event.rehearsalTime}`,
         `${event.eventDate} ${event.eventTime}`,
         `${event.endDate} ${event.endTime}`,
       ],
@@ -77,6 +79,7 @@ const Summary = () => {
         "Light",
         getCategoryStatus(event, "light"),
         `${event.setupDate} ${event.setupTime}`,
+        `${event.rehearsalDate} ${event.rehearsalTime}`,
         `${event.eventDate} ${event.eventTime}`,
         `${event.endDate} ${event.endTime}`,
       ],
@@ -84,6 +87,7 @@ const Summary = () => {
         "Sound",
         getCategoryStatus(event, "sound"),
         `${event.setupDate} ${event.setupTime}`,
+        `${event.rehearsalDate} ${event.rehearsalTime}`,
         `${event.eventDate} ${event.eventTime}`,
         `${event.endDate} ${event.endTime}`,
       ],
@@ -91,6 +95,7 @@ const Summary = () => {
         "Stage",
         getCategoryStatus(event, "stage"),
         `${event.setupDate} ${event.setupTime}`,
+        `${event.rehearsalDate} ${event.rehearsalTime}`,
         `${event.eventDate} ${event.eventTime}`,
         `${event.endDate} ${event.endTime}`,
       ],
@@ -103,7 +108,8 @@ const Summary = () => {
       startY: 50,
       theme: "grid",
       headStyles: { fillColor: [125, 141, 161] }, // Your grey brand color
-      styles: { fontSize: 10, cellPadding: 3 },
+
+      styles: { fontSize: 9, cellPadding: 2 },
     });
 
     doc.save(`${event.eventName}_Summary.pdf`);
@@ -115,13 +121,16 @@ const Summary = () => {
     setShowPrintModal(true);
   };
 
+  // ... (imports remain the same)
+
   return (
     <>
       <Navbar />
       <main className="summary-page">
-        <h1 className="page-title">Summary</h1>
+        <h1 className="page-header">Event Summary Report</h1>
 
         <div className="summary-content-card">
+          {/* Filter Bar remains same but styled via CSS */}
           <div className="filter-bar">
             <div className="filter-item">
               <label>Start Date :</label>
@@ -148,21 +157,23 @@ const Summary = () => {
             <button className="filter-submit-btn">Filter</button>
           </div>
 
-          <div className="summary-table-container">
-            <table className="summary-main-table">
-              <thead>
-                <tr className="table-header-dark">
+          {/* --- Updated Table Container --- */}
+          <div className="table-container">
+            <table className="events-table">
+              <thead className="sticky-thead">
+                <tr className="main-header">
                   <th rowSpan="2">Company Name</th>
                   <th rowSpan="2">Event Name</th>
                   <th rowSpan="2">Location</th>
                   <th rowSpan="2">Client Name</th>
-                  <th rowSpan="2">Contract Number</th>
-                  <th colSpan="3">Date & Time</th>
+                  <th rowSpan="2">Contract #</th>
+                  <th colSpan="4">Date & Time</th>
                   <th colSpan="4">Categories</th>
                   <th rowSpan="2">Status</th>
                 </tr>
-                <tr className="table-header-dark">
+                <tr className="sub-header">
                   <th>Setup</th>
+                  <th>Rehearsal</th>
                   <th>Event</th>
                   <th>End</th>
                   <th>LED</th>
@@ -174,7 +185,7 @@ const Summary = () => {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="13" style={{ textAlign: "center" }}>
+                    <td colSpan="14" style={{ textAlign: "center" }}>
                       Loading Summary Data...
                     </td>
                   </tr>
@@ -191,44 +202,40 @@ const Summary = () => {
                       <td>{row.clientName}</td>
                       <td>{row.contractNumber}</td>
                       <td className="date-cell">
-                        {row.setupDate}
-                        <br />
-                        {row.setupTime}
+                        <div>{row.setupDate}</div>
+                        <div className="time-sub">{row.setupTime}</div>
                       </td>
                       <td className="date-cell">
-                        {row.eventDate}
-                        <br />
-                        {row.eventTime}
+                        <div>{row.rehearsalDate}</div>
+                        <div className="time-sub">{row.rehearsalTime}</div>
                       </td>
                       <td className="date-cell">
-                        {row.endDate}
-                        <br />
-                        {row.endTime}
+                        <div>{row.eventDate}</div>
+                        <div className="time-sub">{row.eventTime}</div>
+                      </td>
+                      <td className="date-cell">
+                        <div>{row.endDate}</div>
+                        <div className="time-sub">{row.endTime}</div>
                       </td>
 
-                      {["led", "light", "sound", "stage"].map((cat) => {
-                        const catStatus = getCategoryStatus(row, cat);
-                        return (
-                          <td key={cat}>
-                            <span
-                              className={
-                                catStatus === "Done"
-                                  ? "status-done"
-                                  : catStatus === "Pending"
-                                    ? "status-pending"
-                                    : ""
-                              }
-                            >
-                              {catStatus}
-                            </span>
-                          </td>
-                        );
-                      })}
+                      {["led", "light", "sound", "stage"].map((cat) => (
+                        <td key={cat}>
+                          <span
+                            className={`status-badge ${getCategoryStatus(row, cat) === "Done" ? "status-done-bg" : "status-pending-bg"}`}
+                          >
+                            {getCategoryStatus(row, cat)}
+                          </span>
+                        </td>
+                      ))}
 
-                      <td className="overall-status">
-                        {row.status === "Completed"
-                          ? "Event Done"
-                          : "In Progress"}
+                      <td className="status-cell">
+                        <span
+                          className={`status-badge overall-${row.status === "Completed" ? "done" : "progress"}`}
+                        >
+                          {row.status === "Completed"
+                            ? "Event Done"
+                            : "In Progress"}
+                        </span>
                       </td>
                     </tr>
                   ))
@@ -238,34 +245,6 @@ const Summary = () => {
           </div>
         </div>
       </main>
-
-      {/* --- PRINT CONFIRMATION MODAL --- */}
-      {showPrintModal && (
-        <div className="modal-overlay">
-          <div className="modal-box">
-            <h2>Print Report</h2>
-            <p>
-              Would you like to print the PDF for{" "}
-              <strong>{eventToPrint?.eventName}</strong>?
-            </p>
-            <div className="modal-actions">
-              <button
-                className="update-btn"
-                onClick={() => generatePDF(eventToPrint)}
-              >
-                Yes, Print
-              </button>
-              <button
-                className="close-btn"
-                onClick={() => setShowPrintModal(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <Footer />
     </>
   );

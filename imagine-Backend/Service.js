@@ -4,6 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import eventRoutes from "./routes/eventRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
+import memberRoutes from "./routes/memberRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -13,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/events", eventRoutes);
 app.use("/api/items", itemRoutes);
+app.use("/api/members", memberRoutes);
+app.use("/api/user", userRouter);
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {

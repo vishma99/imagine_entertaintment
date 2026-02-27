@@ -1,0 +1,620 @@
+.members-page {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.members-container {
+  max-width: 1200px;
+  margin: 80px auto 40px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.members-title {
+  color: #1e3a8a;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  background-color: #fff;
+  padding: 40px 50px;
+  border-radius: 30px;
+}
+
+.stats-card {
+  background: white;
+  padding: 25px 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+}
+
+.cat-name {
+  font-size: 1.5rem;
+  color: #334155;
+  margin-bottom: 20px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.stat-label {
+  color: #64748b;
+}
+
+.stat-value {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Available ගණන පෙන්වන පේළිය */
+.highlight {
+  background-color: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.highlight .stat-value {
+  color: #1e40af;
+  font-size: 1.2rem;
+}
+
+/* Progress Bar Styles */
+.progress-bar-bg {
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+/* Tablet සහ Mobile සඳහා Responsive කිරීම */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .members-title {
+    font-size: 1.8rem;
+  }
+}
+/* Existing card updates */
+.stats-card {
+  cursor: pointer;
+}
+
+.click-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.team-modal {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.close-x {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.role-section {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.role-section h4 {
+  color: #1e40af;
+  margin-bottom: 8px;
+  border-left: 4px solid #1e40af;
+  padding-left: 10px;
+  font-size: 1.1rem;
+}
+
+.role-section ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
+.role-section li {
+  color: #334155;
+  padding: 4px 0;
+  font-weight: 500;
+}
+
+.modal-close-btn {
+  width: 100%;
+  padding: 12px;
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.modal-close-btn:hover {
+  background: #1e40af;
+}
+.online {
+  color: #10b981;
+  font-weight: 600;
+} /* Green */
+.offline {
+  color: #94a3b8;
+  font-style: italic;
+} /* Gray */
+.no-staff {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+/* Card Container */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  padding: 20px;
+}
+
+/* Card Design */
+.stats-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.stats-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+}
+
+/* Category Name */
+.cat-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+/* Stats Styling */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #64748b;
+}
+
+.stat-value {
+  font-weight: 800;
+  color: #1e293b;
+  font-size: 18px;
+}
+
+.stat-row.highlight {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+/* Progress Bar */
+.progress-bar-bg {
+  height: 10px;
+  background: #f1f5f9;
+  border-radius: 50px;
+  margin: 20px 0;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 50px;
+  transition: width 1s ease-in-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hint Text */
+.click-hint {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 15px;
+  font-style: italic;
+}
+/* Header Container */
+.members-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 15px;
+}
+
+/* Admin Dashboard Style Button */
+.admin-style-add-btn {
+  background-color: #f39c12;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-style-add-btn:hover {
+  background-color: #e67e22;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Title Styling */
+.members-title {
+  color: #1e3c72;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #1e3c72;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .members-header-container {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}
+.member-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.online {
+  background-color: #2ecc71;
+}
+.dot.offline {
+  background-color: #e74c3c;
+}
+
+/* Status Button Styles */
+.status-update-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-leave {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.btn-leave:hover {
+  background-color: #ef9a9a;
+}
+
+.btn-available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.btn-available:hover {
+  background-color: #a5d6a7;
+}
+.header-button-group {
+  display: flex;
+  gap: 15px;
+}
+
+/* Leave Update Button Style */
+.leave-update-main-btn {
+  background-color: #ffffff;
+  color: #1e3c72;
+  border: 2px solid #1e3c72;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.leave-update-main-btn:hover {
+  background-color: #1e3c72;
+  color: white;
+}
+
+.leave-btn {
+  background-color: #e74c3c !important; /* Red color for leave */
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+/* Vertical Popup Layout */
+.modal-body-vertical {
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.role-group {
+  margin-bottom: 25px;
+}
+
+.role-title-bar {
+  color: #1e3c72;
+  font-size: 1.2rem;
+  border-left: 4px solid #1e3c72;
+  padding-left: 10px;
+  margin-bottom: 12px;
+  text-transform: capitalize;
+}
+
+.member-list-clean {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.member-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.status-dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  margin-right: 15px;
+  display: inline-block;
+}
+
+.status-dot.available {
+  background-color: #2ecc71; /* Green */
+}
+
+.status-dot.leave {
+  background-color: #e74c3c; /* Red */
+}
+
+.member-name-text {
+  flex: 1;
+}
+
+.modal-close-btn-full {
+  width: 90%;
+  margin: 10px auto 20px;
+  padding: 10px;
+  background-color: #1e3c72;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+}
+/* --- PAGE LAYOUT --- */
+.members-page {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.members-container {
+  max-width: 1200px;
+  margin: 0 auto; /* Removed top margin to handle with padding */
+  padding: 120px 20px 60px 20px; /* Space for fixed Navbar */
+  text-align: center;
+}
+
+/* --- HEADER & TITLE --- */
+.members-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* Allows wrapping on mobile */
+  gap: 20px;
+}
+
+.members-title {
+  color: #1e3c72;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  width: 100%; /* Title takes full width on mobile */
+}
+
+/* --- STATS GRID (MOBILE FIRST) --- */
+.stats-grid {
+  display: grid;
+  /* Automatically adjusts based on screen width */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* --- MODAL RESPONSIVENESS --- */
+.team-modal,
+.admin-modal {
+  background: white;
+  width: 95%; /* Use more screen width on mobile */
+  max-width: 500px;
+  max-height: 90vh; /* Prevent modal from going off screen */
+  overflow-y: auto;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* --- MEDIA QUERIES --- */
+
+/* For Tablets (Small Laptops) */
+@media (max-width: 1024px) {
+  .members-title {
+    font-size: 2.2rem;
+  }
+}
+
+/* For Phones (Landscape) */
+@media (max-width: 768px) {
+  .members-container {
+    padding-top: 100px;
+  }
+
+  .header-button-group {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column; /* Buttons stack vertically */
+  }
+
+  .admin-style-add-btn,
+  .leave-update-main-btn {
+    width: 100%; /* Full width buttons on mobile */
+    text-align: center;
+  }
+
+  .stats-grid {
+    padding: 15px;
+    gap: 15px;
+  }
+}
+
+/* For Small Phones (Portrait) */
+@media (max-width: 480px) {
+  .members-title {
+    font-size: 1.8rem;
+  }
+
+  .stats-card {
+    padding: 15px;
+  }
+
+  .cat-name {
+    font-size: 1.2rem;
+  }
+}

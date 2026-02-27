@@ -61,16 +61,24 @@ const MissingItem = () => {
           <table className="missing-table">
             <thead>
               <tr className="table-top-header">
-                <th rowSpan="2">Event / Company</th>
-                <th rowSpan="2">Item Name (Barcode)</th>
-                <th rowSpan="2">Reported Date</th>
-                <th colSpan="4">Action by Category</th>
+                <th rowSpan="2" style={{ borderBottom: "1px solid #000" }}>
+                  Event / Company
+                </th>
+                <th rowSpan="2" style={{ borderBottom: "1px solid #000" }}>
+                  Item Name
+                </th>
+                <th rowSpan="2" style={{ borderBottom: "1px solid #000" }}>
+                  Reported Date
+                </th>
+                <th colSpan="4" style={{ borderBottom: "1px solid #000" }}>
+                  Action by Category
+                </th>
               </tr>
               <tr className="table-sub-header">
-                <th>LED</th>
-                <th>Light</th>
-                <th>Sound</th>
-                <th>Stage</th>
+                <th style={{ borderBottom: "1px solid #000" }}>LED</th>
+                <th style={{ borderBottom: "1px solid #000" }}>Light</th>
+                <th style={{ borderBottom: "1px solid #000" }}>Sound</th>
+                <th style={{ borderBottom: "1px solid #000" }}>Stage</th>
               </tr>
             </thead>
             <tbody>
@@ -92,9 +100,8 @@ const MissingItem = () => {
                       <small>{item.companyName}</small>
                     </td>
                     <td>
-                      {item.itemName}
+                      <code style={{ color: "#ec0404" }}>{item.itemName}</code>
                       <br />
-                      <code style={{ color: "#ec0404" }}>{item.barcodeID}</code>
                     </td>
                     <td className="date-display">{item.missingDate}</td>
 

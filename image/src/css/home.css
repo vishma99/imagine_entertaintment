@@ -1,61 +1,467 @@
-/* Container styling to center the content */
 .home-container {
-  min-height: 70vh; /* Adjusts height between Navbar and Footer */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background: linear-gradient(135deg, #f0f4ff 0%, #d9e2ff 100%); */
+  /* padding: 2rem; */
+  /* Navbar space */
+}
+
+.home-content-wrapper {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+}
+
+.welcome-section {
+  margin-bottom: 4rem;
+}
+
+.home-title {
+  font-size: 3.5rem;
+  color: #1e3a8a; /* Deep Blue */
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 0.5rem;
+}
+
+.home-subtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+/* Card Styling */
+.grid-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4rem 2rem;
-  background-color: #f2f2f2;
-  margin-top: 80px;
-}
-.home-contact {
-  background-color: #fff;
-  border-radius: 30px;
-  padding: 40px 70px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 25px rgba(30, 58, 138, 0.05);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  overflow: hidden;
 }
 
-/* Big Title Styling */
-.home-title {
-  font-size: 4rem;
-  color: #1e40af; /* Matches your brand blue */
-  margin-bottom: 3rem;
-  font-weight: 500;
-}
-
-/* Grid Layout for the 4 Buttons */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columns like your UI */
-  gap: 2.5rem;
+.grid-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 900px;
-}
-
-/* Individual Card (Button) Styling */
-.grid-card {
-  background-color: #6b7280; /* Grey color from HomePage.png */
-  color: #000000;
-  border: none;
-  border-radius: 12px;
-  padding: 4rem 2rem;
-  font-size: 2.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 4px;
+  background: #1e40af;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
 }
 
 .grid-card:hover {
-  background-color: #4b5563; /* Darker grey on hover */
-  transform: translateY(-5px); /* Subtle lift effect */
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(30, 58, 138, 0.12);
+  background: #f8fafc;
 }
 
-/* Responsive adjustment for smaller screens */
+.grid-card:hover::before {
+  transform: scaleX(1);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  background: #eff6ff;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.grid-card:hover .card-icon {
+  transform: rotate(10deg) scale(1.1);
+}
+
+.card-text h3 {
+  font-size: 1.5rem;
+  color: #1e293b;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+.card-text p {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.card-arrow {
+  margin-top: 1.5rem;
+  font-size: 1.5rem;
+  color: #1e40af;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.grid-card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(10px);
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
+  .home-title {
+    font-size: 2.5rem;
+  }
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-  .home-title {
-    font-size: 2.5rem;
+}
+/* Quick Stats Section Styling */
+.welcome-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 30px;
+  margin-bottom: 3rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.quick-stats-container {
+  display: flex;
+  gap: 1.1rem;
+}
+
+.stat-box {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 20px;
+  border-left: 5px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140px;
+  transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: scale(1.05);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 992px) {
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+  .quick-stats-container {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+/* --- Upcoming Events Ticker Styles --- */
+.upcoming-events-ticker {
+  width: 100%;
+  height: 45px; /* අඟලකට ආසන්න උසක් */
+  background: #1e3a8a; /* ඔබේ Brand Blue පාට */
+  color: white;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 40px; /* Dashboard Grid එකෙන් මඳක් පහළට */
+}
+
+.ticker-label {
+  background: #ef4444; /* රතු පාටින් කැපී පෙනීමට */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  z-index: 2;
+  white-space: nowrap;
+  position: absolute;
+  left: 0;
+}
+
+.ticker-wrap {
+  width: 100%;
+  padding-left: 150px; /* Label එකට ඉඩ තැබීමට */
+}
+
+.ticker-move {
+  display: flex;
+  width: max-content;
+  animation: ticker-move 30s linear infinite; /* Animation වේගය මෙතැනින් පාලනය කළ හැක */
+}
+
+.ticker-move:hover {
+  animation-play-state: paused; /* Mouse එක ගෙන ගිය විට නතර වේ */
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 30px;
+  font-size: 0.95rem;
+}
+
+.event-date {
+  color: #fbbf24; /* කැපී පෙනෙන කහ පැහැයක් */
+  font-weight: bold;
+}
+
+.event-name {
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.event-venue {
+  font-style: italic;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.event-divider {
+  margin-left: 20px;
+  opacity: 0.3;
+}
+
+@keyframes ticker-move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .ticker-label {
+    padding: 0 10px;
+    font-size: 0.7rem;
+  }
+}
+/* Container එක වෙනස් කිරීම */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; /* සිරස් අතට පෙළගැස්වීමට */
+  align-items: center;
+  background: linear-gradient(135deg, #f0f4ff 0%, #d9e2ff 100%);
+  padding: 2rem 0; /* දෙපස padding ඉවත් කරන්න */
+
+  position: relative;
+}
+
+.home-content-wrapper {
+  max-width: 1100px;
+  width: 90%;
+  flex-grow: 1;
+  margin-bottom: 50px;
+}
+
+/* --- Ticker Full Width Styling --- */
+.upcoming-events-ticker {
+  width: 100%; /* සම්පූර්ණ පළල */
+  height: 45px;
+  background: #1e3a8a;
+  color: white;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  /* Footer එකට හරියටම ඉහළින් තැබීමට */
+  margin-top: auto;
+}
+
+/* Animation සහ අනෙකුත් කොටස් කලින් පරිදිම තබන්න */
+/* --- MAIN CONTAINER --- */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f0f4ff 0%, #d9e2ff 100%);
+  padding: 80px 0 0 0; /* Padding top for Navbar */
+  width: 100%;
+}
+
+.home-content-wrapper {
+  width: 92%; /* Responsive width */
+  max-width: 1400px; /* Wider for desktop, like Summary page */
+  flex-grow: 1;
+  padding: 2rem 0;
+  margin: 0 auto;
+}
+
+/* --- WELCOME BANNER (RESPONSIVE) --- */
+.welcome-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap; /* Allows wrapping on small screens */
+  gap: 2rem;
+}
+
+.welcome-text {
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+}
+
+.home-title {
+  font-size: clamp(2rem, 5vw, 3.5rem); /* Dynamically scales text size */
+  color: #1e3a8a;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+/* --- STATS BOXES --- */
+.quick-stats-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* Key for mobile */
+  justify-content: center;
+}
+
+.stat-box {
+  background: #f8fafc;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  border-left: 5px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 130px;
+  flex: 1; /* Makes boxes grow equally */
+}
+
+/* --- DASHBOARD GRID --- */
+.dashboard-grid {
+  display: grid;
+  /* Automatically fits columns based on screen width */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.grid-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.grid-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(30, 58, 138, 0.1);
+}
+
+/* --- TICKER (FULL WIDTH) --- */
+.upcoming-events-ticker {
+  width: 100%;
+  height: 50px;
+  background: #1e3a8a;
+  color: white;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: sticky;
+  bottom: 0; /* Keeps it visible at the bottom */
+  z-index: 100;
+}
+
+/* --- MOBILE BREAKPOINTS --- */
+@media (max-width: 1200px) {
+  .welcome-banner {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .welcome-text {
+    text-align: center;
+    width: 100%;
+  }
+  .quick-stats-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-container {
+    padding-top: 70px;
+  }
+
+  .home-content-wrapper {
+    width: 95%;
+  }
+
+  .stat-box {
+    min-width: 45%; /* Two boxes side-by-side on very small screens */
+  }
+
+  .grid-card {
+    padding: 1.5rem;
+  }
+
+  .ticker-label {
+    display: none; /* Hide red label on tiny screens to save space */
+  }
+
+  .ticker-wrap {
+    padding-left: 10px;
   }
 }

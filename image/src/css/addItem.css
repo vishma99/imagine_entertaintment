@@ -59,7 +59,7 @@
 }
 /* Table Styling from Image */
 .scanned-table-container {
-  border: 2px solid #000;
+  /* border: 2px solid #000; */
   border-radius: 15px;
   overflow: hidden;
 }
@@ -281,4 +281,104 @@
 
 .delete-btn:active {
   transform: translateY(0); /* Pressed effect */
+}
+.error-modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.error-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.error-modal-box h2 {
+  color: #d32f2f;
+  margin-bottom: 10px;
+}
+
+.error-modal-box p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+/* --- මූලික සැකසුම (Responsive Container) --- */
+.add-item-page {
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  padding: 100px 5% 40px 5%; /* Navbar එකට ඉඩ තබා දෙපැත්තෙන් % පාවිච්චි කරන්න */
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.add-item-card {
+  background: white;
+  width: 100%;
+  max-width: 1100px; /* Navbar එකේ වගේ පුළුල් පෙනුමක් ලබා ගැනීමට */
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Barcode Form එක Responsive කිරීම --- */
+.input-container {
+  display: flex;
+  flex-direction: row; /* Desktop එකේ පේළියට */
+  gap: 15px;
+}
+
+@media (max-width: 600px) {
+  .input-container {
+    flex-direction: column; /* Mobile එකේදී එක යට එක */
+  }
+
+  .add-btn {
+    width: 100%; /* Mobile වලදී Button එක ලොකු කරන්න */
+    padding: 12px;
+  }
+
+  .page-title {
+    font-size: 1.8rem; /* Mobile වලට ගැලපෙන font size */
+  }
+}
+
+/* --- Table එක Scroll වෙන්න හැදීම (පිටුව කැඩෙන්නේ නැති වෙන්න) --- */
+.scanned-table-container {
+  border: 2px solid #000;
+  border-radius: 15px;
+  overflow-x: auto; /* Screen එක කුඩා වූ විට Table එක ඇතුලේ scroll වෙන්න */
+  margin-top: 20px;
+}
+
+.scanned-table {
+  width: 100%;
+  min-width: 500px; /* Mobile වලදී තීරුවල හැඩය රැක ගැනීමට */
+  border-collapse: collapse;
+}
+
+/* --- Modals Responsive කිරීම --- */
+.success-modal,
+.delete-modal,
+.error-modal-box,
+.password-modal-box {
+  width: 95%; /* Mobile වලදී දෙපැත්තට ගෑවෙන්නේ නැති වෙන්න */
+  max-width: 450px;
+  padding: 25px;
 }

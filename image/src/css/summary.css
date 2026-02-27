@@ -6,12 +6,11 @@
   flex-direction: column;
   align-items: center;
 }
-
-.page-title {
+.page-title1 {
   font-size: 3rem;
   font-weight: bold;
   margin-bottom: 40px;
-  color: #000;
+  color: #1e3c72;
 }
 
 .summary-content-card {
@@ -142,4 +141,298 @@
   display: flex;
   justify-content: center;
   gap: 15px;
+}
+/* --- MAIN PAGE LAYOUT --- */
+.summary-page {
+  background-color: #f3f4f6;
+  padding: 100px 2% 40px 2%; /* Uses % for side padding to fill screen */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-content-card {
+  width: 98%; /* Ensures it spans almost the full width of the screen */
+  max-width: 1800px; /* Limits growth on ultra-wide monitors */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- RESPONSIVE FILTER BAR --- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to next line on mobile */
+  gap: 20px;
+  margin-bottom: 25px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* --- TABLE SCROLLING (The most important part) --- */
+.summary-table-container {
+  width: 100%;
+  overflow-x: auto; /* Enables horizontal scroll on small screens */
+  border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.summary-main-table {
+  width: 100%;
+  min-width: 1000px; /* Prevents columns from squishing; triggers scroll instead */
+  border-collapse: collapse;
+}
+
+/* --- MOBILE RESPONSIVENESS (Media Queries) --- */
+@media (max-width: 768px) {
+  .page-title1 {
+    font-size: 2rem;
+  }
+
+  .filter-bar {
+    flex-direction: column; /* Stacks dates vertically on phones */
+    align-items: stretch;
+  }
+
+  .filter-item {
+    justify-content: space-between;
+  }
+
+  .filter-submit-btn {
+    width: 100%; /* Full width button on mobile */
+  }
+
+  .summary-content-card {
+    padding: 10px;
+    width: 100%;
+    border-radius: 0; /* Flush to edges on mobile */
+  }
+}
+
+/* --- MODAL RESPONSIVENESS --- */
+.modal-box {
+  width: 90%;
+  max-width: 450px;
+  padding: 20px;
+  border-radius: 15px;
+}
+/* --- TABLE CONTAINER & SCROLLING --- */
+.summary-table-container {
+  width: 100%;
+  overflow-x: auto; /* තිරය කුඩා වූ විට දකුණට scroll කිරීමට */
+  overflow-y: auto;
+  max-height: 70vh; /* වගුව ගොඩක් දිග නම් ඇතුළත scroll වීමට */
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background-color: #fff;
+  /* Scrollbar එක ලස්සන කිරීමට (Chrome/Safari) */
+}
+
+.summary-table-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.summary-table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.summary-main-table {
+  width: 100%;
+  min-width: 1300px; /* වගුව තෙරපීම වැළැක්වීමට මෙහි අවම පළලක් ලබා දීම වැදගත් */
+  border-collapse: separate; /* Border radius වැඩ කිරීමට separate විය යුතුයි */
+  border-spacing: 0;
+}
+
+/* --- PADDING & ALIGNMENT --- */
+.summary-main-table th,
+.summary-main-table td {
+  padding: 16px 12px; /* වැඩි කළ Padding එක */
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+}
+
+/* Sticky Header - වගුව පහළට යන විට Header එක උඩ රැඳී පවතී */
+.summary-main-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #7d8da1;
+  color: #000;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-top: 1px solid #64748b;
+}
+
+/* Sub-header එකත් sticky කිරීමට */
+.summary-main-table thead tr:nth-child(2) th {
+  top: 48px; /* පළමු පේළියේ උස අනුව මෙය වෙනස් කරන්න */
+}
+
+.date-cell {
+  background-color: #f8fafc;
+  color: #475569;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Clickable Row Hover Effect */
+.clickable-row {
+  transition: all 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #f1f5f9 !important;
+  transform: scale(0.998); /* පොඩි animation එකක් */
+}
+
+/* අවසාන තීරුවේ border එක ඉවත් කිරීම */
+.summary-main-table th:last-child,
+.summary-main-table td:last-child {
+  border-right: none;
+}
+/* --- PAGE LAYOUT --- */
+.summary-page {
+  background-color: #f8fafc;
+  padding: 120px 2% 60px 2%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #1e3c72;
+}
+
+.summary-content-card {
+  width: 100%;
+  max-width: 1600px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* --- TABLE CONTAINER (Same as Pending) --- */
+.table-container {
+  width: 100%;
+  max-height: 550px; /* පේළි කිහිපයකට පසුව scroll වීමට */
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #000;
+  border-radius: 8px;
+  position: relative;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1300px;
+}
+
+/* --- STICKY HEADER --- */
+.events-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #7d8da1;
+  color: #000;
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  padding: 12px 8px;
+  font-size: 0.85rem;
+}
+
+.events-table thead tr.sub-header th {
+  top: 40px; /* පළමු පේළියේ උස */
+  z-index: 99;
+}
+
+.events-table td {
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  background-color: #fff;
+}
+
+/* --- DATE CELL STYLING --- */
+.date-cell {
+  background-color: #f1f5f9 !important;
+}
+.time-sub {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* --- BADGE STYLING --- */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-done-bg {
+  background-color: #dcfce7;
+  color: #166534;
+}
+.status-pending-bg {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.overall-done {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #15803d;
+}
+.overall-progress {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #1e40af;
+}
+
+/* --- HOVER EFFECT --- */
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.clickable-row:hover td {
+  background-color: #f1f5f9;
+}
+
+/* Filter Bar Styling */
+.filter-bar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
 }

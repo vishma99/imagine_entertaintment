@@ -1,73 +1,450 @@
-/* Container for the whole navbar */
+/* =========================================
+   1. Main Container (Navbar Layout)
+   ========================================= */
 .navbar-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 0.8rem 2rem;
   background-color: #ffffff;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  
-  /* Fixed Positioning Corrected */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
-  z-index: 1000; /* Ensures navbar stays above the grid cards */
-  box-sizing: border-box; /* Important: prevents padding from breaking width */
+  z-index: 1000;
+  box-sizing: border-box;
 }
 
-/* Logo styling */
+/* =========================================
+   2. Logo & Brand Section
+   ========================================= */
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
 .navbar-logo {
   height: 48px;
   width: 48px;
   object-fit: contain;
+  border-radius: 10px;
 }
 
-/* Navigation Links Wrapper */
+.brand-name {
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #1e3a8a;
+  letter-spacing: 1px;
+}
+
+.brand-name small {
+  font-size: 0.7rem;
+  color: #ef4444;
+}
+
+/* =========================================
+   3. Navigation Links
+   ========================================= */
 .nav-links-wrapper {
   display: flex;
-  gap: 2rem; 
+  gap: 1.5rem;
   align-items: center;
 }
 
-/* Individual Link styling */
 .nav-link-item {
   padding: 0.5rem 1rem;
-  border-radius: 9999px;
+  border-radius: 10px;
   font-weight: 500;
+  font-size: 14px; /* Professional size */
   text-decoration: none;
   color: #1f2937;
-  transition: color 0.2s, background-color 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
 .nav-link-item:hover {
   color: #2563eb;
+  background-color: #f8fafc;
 }
 
-/* Active State */
 .active-link {
-  background-color: #1e40af;
+  background-color: #1e40af !important;
   color: #ffffff !important;
 }
 
-/* Profile Section */
-.profile-btn {
-  padding: 0.5rem;
-  border-radius: 50%;
+/* =========================================
+   4. Dropdown Menu
+   ========================================= */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  align-items: center;
+  height: 100%;
+}
+
+.dropbtn {
   background: none;
-  border: 2px solid #000000;
+  border: none;
   cursor: pointer;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+.dropbtn:hover {
+  color: #2563eb;
+  background-color: #f8fafc;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid #eee;
+  padding: 5px 0;
+  z-index: 1100;
+  overflow: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #f3f4f6;
+  color: #2563eb;
+}
+
+.dropdown-active {
+  color: #1e40af !important;
+  font-weight: bold;
+}
+
+/* =========================================
+   5. Profile & User Section
+   ========================================= */
+.profile-section {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition: background 0.3s;
+  position: relative;
+}
+
+.user-profile-wrapper:hover {
+  background: #f1f5f9;
+}
+
+.user-details-text {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.user-role-badge {
+  font-size: 0.65rem;
+  background: #e2e8f0;
+  color: #475569;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Avatar & Status */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 12px; /* Slightly squared for professional look */
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.profile-btn:hover {
-  background-color: #f3f4f6;
+.online-status {
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border: 2px solid white;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
 }
 
-.profile-icon {
-  height: 24px;
-  width: 24px;
+/* Floating Profile Menu */
+.profile-floating-menu {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: white;
+  min-width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  z-index: 1000;
+  animation: slideIn 0.2s ease-out;
+}
+
+.menu-header {
+  padding: 8px 12px;
+}
+
+.menu-header p {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.logout-action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  color: #dc2626;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.logout-action-btn:hover {
+  background: #fef2f2;
+}
+
+/* Professional Login Button */
+.login-btn-professional {
+  padding: 0.5rem 1.5rem;
+  background-color: #1e40af;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.login-btn-professional:hover {
+  background-color: #1e3a8a;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================================
+   6. Responsive Adjustments (Width < 1100px)
+   ========================================= */
+@media screen and (max-width: 1400px) {
+  /* Navbar එකේ උස සහ padding අඩු කිරීම */
+  .navbar-container {
+    padding: 0.6rem 1.5rem;
+  }
+
+  /* Logo සහ Brand නම කුඩා කිරීම */
+  .navbar-logo {
+    height: 38px;
+    width: 38px;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  /* Links අතර පරතරය සහ අකුරු කුඩා කිරීම */
+  .nav-links-wrapper {
+    gap: 0.8rem;
+  }
+
+  .nav-link-item {
+    padding: 0.4rem 0.8rem;
+    font-size: 12.5px; /* අකුරු කුඩා කර ඇත */
+  }
+
+  /* Profile කොටස කුඩා කිරීම */
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+
+  .user-name {
+    font-size: 0.8rem;
+  }
+
+  .user-role-badge {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+
+  .dropdown-content a {
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+  .dropbtn {
+    font-size: 12.5px;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* =========================================
+   7. Extra Small Screens (Width < 768px)
+   ========================================= */
+@media screen and (max-width: 1200px) {
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .nav-links-wrapper {
+    gap: 0.4rem;
+  }
+
+  .nav-link-item {
+    font-size: 11.5px;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* Mobile වලදී නම සඟවා Avatar එක පමණක් පෙන්වීමට අවශ්‍ය නම් මෙය පාවිච්චි කරන්න */
+  .user-details-text {
+    display: none;
+  }
+}
+/* Mobile Menu Icon Styling */
+.mobile-menu-icon {
+  display: none; /* Desktop එකේදී නොපෙනේ */
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: #1e3a8a;
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
+/* 900px Responsive Logic */
+@media screen and (max-width: 950px) {
+  .mobile-menu-icon {
+    display: flex;
+  }
+
+  .nav-links-wrapper {
+    display: none; /* Links සඟවයි */
+    flex-direction: column;
+    position: absolute;
+    top: 65px; /* Navbar උසට පහළින් */
+    right: 0;
+    width: 250px;
+    background-color: #ffffff;
+    box-shadow: -4px 10px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    gap: 10px;
+    z-index: 999;
+    border-radius: 0 0 0 15px;
+  }
+
+  /* Hamburger එක ක්ලික් කළ විට Links පෙන්වීම */
+  .nav-links-wrapper.active {
+    display: flex;
+  }
+
+  .nav-link-item {
+    width: 100%;
+    text-align: left;
+    padding: 12px;
+  }
+
+  .dropdown-content {
+    position: static; /* Mobile වලදී drop down එක ඇතුළතටම වැටීමට */
+    box-shadow: none;
+    background-color: #f8fafc;
+    width: 100%;
+    padding-left: 15px;
+  }
+
+  /* Profile text mobile එකේදී සඟවන්න (Avatar එක පමණක් පෙන්වන්න) */
+  .user-details-text {
+    display: none;
+  }
+  .dropbtn {
+    width: 100%;
+    font-size: 11.5px;
+    padding: 12px;
+    justify-content: flex-start; /* වම්පසට පෙළගැසීමට */
+    background: transparent;
+  }
+}
+
+/* Hamburger Animation (Optional) */
+.bar.open:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.bar.open:nth-child(2) {
+  opacity: 0;
+}
+.bar.open:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }

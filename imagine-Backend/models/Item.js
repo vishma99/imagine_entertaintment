@@ -6,7 +6,7 @@ const itemSchema = new mongoose.Schema(
     itemName: { type: String, required: true },
     category: { type: String, required: true },
   },
-  { collection: "barcode" }
+  { collection: "barcode" },
 );
 
 export default mongoose.model("Item", itemSchema);

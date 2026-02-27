@@ -1,20 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../css/addItem.css";
 import EventNavbar from "../compnent/EventNavbar";
 
 const AddItem = () => {
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [itemToProcess, setItemToProcess] = useState(null);
+  const ADMIN_PASSWORD = "123";
   const { eventId, category } = useParams();
   const navigate = useNavigate();
+  const barcodeInputRef = useRef(null);
+
   const [barcode, setBarcode] = useState("");
   const [scannedItems, setScannedItems] = useState([]);
-  const [eventStatus, setEventStatus] = useState(""); // Captures status from DB
+  const [eventStatus, setEventStatus] = useState("");
   const [error, setError] = useState("");
 
   // Modal States
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const playSound = (type) => {
+    const audio = new Audio(
+      type === "success" ? "/sounds/success.mp3" : "/sounds/error.mp3",
+    );
+    audio.play().catch((e) => console.log("Audio play error"));
+  };
 
   // --- 1. FETCH DATA & STATUS ---
   useEffect(() => {
@@ -24,10 +40,8 @@ const AddItem = () => {
           `http://localhost:5001/api/events/${eventId}`,
         );
         const data = await response.json();
-
         if (response.ok) {
-          setEventStatus(data.status); // Get status (Pending, Ongoing, etc.)
-
+          setEventStatus(data.status);
           if (data.equipmentList) {
             const filteredItems = data.equipmentList.filter(
               (item) => item.category.toLowerCase() === category.toLowerCase(),
@@ -41,6 +55,27 @@ const AddItem = () => {
     };
     if (eventId) fetchExistingItems();
   }, [eventId, category]);
+
+  const handleErrorModalClose = () => {
+    setShowErrorModal(false);
+    setTimeout(() => {
+      barcodeInputRef.current?.focus();
+    }, 10);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (showErrorModal && event.key === "Enter") {
+        event.preventDefault();
+        handleErrorModalClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showErrorModal]);
 
   // --- 2. AUTO-SAVE LOGIC ---
   const autoSaveToDatabase = async (updatedList) => {
@@ -58,11 +93,10 @@ const AddItem = () => {
     }
   };
 
-  // --- 3. SUBMIT LOGIC (BLOCKED IF ONGOING) ---
+  // --- 3. SUBMIT LOGIC ---
   const handleBarcodeSubmit = async (e) => {
     e.preventDefault();
-    if (eventStatus === "Ongoing") return; // Extra safety
-
+    if (eventStatus === "Ongoing") return;
     setError("");
     if (!barcode.trim()) return;
 
@@ -71,59 +105,77 @@ const AddItem = () => {
         `http://localhost:5001/api/items/${barcode.trim()}`,
       );
       if (response.status === 404) {
-        setError("Item not found in barcode database.");
+        setErrorMessage("Item not found in barcode database.");
+        setShowErrorModal(true);
+        setBarcode("");
         return;
       }
       const item = await response.json();
-
       if (response.ok) {
         if (item.category.toLowerCase() !== category.toLowerCase()) {
-          setError(
+          playSound("error");
+          setErrorMessage(
             `Category mismatch: Item is ${item.category.toUpperCase()}.`,
           );
+          setShowErrorModal(true);
+          setBarcode("");
           return;
         }
         if (scannedItems.find((i) => i.barcodeID === item.barcodeID)) {
-          setError("Item already exists.");
+          playSound("error");
+          setErrorMessage(`Item already scanned: ${item.itemName}`);
+
+          setShowErrorModal(true);
+          setBarcode("");
           return;
         }
-
+        playSound("success");
         const newItemsList = [...scannedItems, item];
         setScannedItems(newItemsList);
         setBarcode("");
         await autoSaveToDatabase(newItemsList);
       }
     } catch (err) {
-      setError("Server error.");
+      setErrorMessage("Server error. Please check your connection.");
+      setShowErrorModal(true);
     }
   };
 
-  const triggerDeleteModal = (barcodeID) => {
-    if (eventStatus === "Ongoing") return; // Can't delete if ongoing
-    setItemToDelete(barcodeID);
-    setShowDeleteModal(true);
+  const triggerDeleteModal = (item) => {
+    if (eventStatus === "Ongoing" || eventStatus === "Return") return;
+    setItemToProcess(item);
+    setShowPasswordModal(true);
+  };
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordInput === ADMIN_PASSWORD) {
+      setShowPasswordModal(false);
+      setPasswordInput("");
+      setPasswordError("");
+      setShowDeleteModal(true); // Password හරි නම් Delete Confirm Modal එක පෙන්වන්න
+    } else {
+      setPasswordError("Invalid Admin Password!");
+    }
   };
 
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/events/${eventId}/equipment/${itemToDelete}`,
-        {
-          method: "DELETE",
-        },
+        `http://localhost:5001/api/events/${eventId}/equipment/${itemToProcess.barcodeID}`,
+        { method: "DELETE" },
       );
       if (response.ok) {
         setScannedItems(
-          scannedItems.filter((item) => item.barcodeID !== itemToDelete),
+          scannedItems.filter((i) => i.barcodeID !== itemToProcess.barcodeID),
         );
         setShowDeleteModal(false);
+        setItemToProcess(null);
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Determine if Ongoing
   const isOngoing = eventStatus === "Ongoing";
 
   return (
@@ -140,22 +192,22 @@ const AddItem = () => {
           <form className="barcode-form" onSubmit={handleBarcodeSubmit}>
             <div className="input-container">
               <input
+                ref={barcodeInputRef}
                 type="text"
                 placeholder={
                   isOngoing ? "Editing Disabled (Ongoing)" : "Enter Barcode..."
                 }
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
-                disabled={isOngoing} // UNCLICKABLE INPUT
+                disabled={isOngoing}
                 autoFocus={!isOngoing}
               />
-
               <button
                 type="submit"
                 className="add-btn"
-                disabled={isOngoing} // UNCLICKABLE BUTTON
+                disabled={isOngoing}
                 style={{
-                  backgroundColor: isOngoing ? "#90EE90" : "", // LIGHT GREEN
+                  backgroundColor: isOngoing ? "#90EE90" : "",
                   color: isOngoing ? "#ffffff" : "",
                   cursor: isOngoing ? "not-allowed" : "pointer",
                   border: "none",
@@ -171,7 +223,6 @@ const AddItem = () => {
             <table className="scanned-table">
               <thead>
                 <tr>
-                  <th>BarcodeId</th>
                   <th>Item Name</th>
                   <th>Action</th>
                 </tr>
@@ -181,14 +232,13 @@ const AddItem = () => {
                   scannedItems.map((item, index) => (
                     <tr key={item.barcodeID}>
                       <td>
-                        {index + 1}. {item.barcodeID}
+                        {index + 1}.{item.itemName}
                       </td>
-                      <td>{item.itemName}</td>
                       <td>
                         <button
                           className="delete-btn"
                           disabled={isOngoing}
-                          onClick={() => triggerDeleteModal(item.barcodeID)}
+                          onClick={() => triggerDeleteModal(item)}
                           style={{ opacity: isOngoing ? 0.5 : 1 }}
                         >
                           Remove
@@ -233,12 +283,93 @@ const AddItem = () => {
           </div>
         </div>
       )}
+      {/* PASSWORD MODAL */}
+      {showPasswordModal && (
+        <div className="modal-overlay">
+          <div
+            className="password-modal-box"
+            style={{
+              background: "#fff",
+              padding: "20px",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+          >
+            <h2>Security Check</h2>
+            <p>Please enter admin password to remove this item.</p>
+            <form onSubmit={handlePasswordSubmit}>
+              <input
+                type="password"
+                placeholder="Enter Password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                autoFocus
+                style={{
+                  padding: "10px",
+                  width: "80%",
+                  marginBottom: "10px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                }}
+              />
+              {passwordError && (
+                <p style={{ color: "red", fontSize: "13px" }}>
+                  {passwordError}
+                </p>
+              )}
+              <div
+                className="modal-actions"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                <button
+                  type="submit"
+                  className="confirm-delete-btn"
+                  style={{
+                    background: "#ef4444",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    border: "none",
+                  }}
+                >
+                  Verify
+                </button>
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => {
+                    setShowPasswordModal(false);
+                    setPasswordInput("");
+                    setPasswordError("");
+                  }}
+                  style={{
+                    background: "#6b7280",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    border: "none",
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* DELETE MODAL */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="delete-modal">
             <h2>Are you sure?</h2>
+            <p>
+              Do you really want to remove <b>{itemToProcess?.itemName}</b>?
+            </p>
             <div className="modal-actions">
               <button className="confirm-delete-btn" onClick={confirmDelete}>
                 Yes, Remove
@@ -250,6 +381,25 @@ const AddItem = () => {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ERROR MODAL */}
+      {showErrorModal && (
+        <div className="modal-overlay">
+          <div className="error-modal-box">
+            <div className="error-icon">⚠️</div>
+            <h2>Attention!</h2>
+            <p>{errorMessage}</p>
+
+            <button
+              className="close-btn"
+              onClick={handleErrorModalClose}
+              autoFocus
+            >
+              Understood
+            </button>
           </div>
         </div>
       )}

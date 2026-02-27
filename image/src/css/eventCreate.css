@@ -101,7 +101,6 @@
   display: flex;
   gap: 50px;
   padding-left: 40px;
- 
 }
 
 .datetime-field {
@@ -158,13 +157,19 @@
   text-align: center;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 @keyframes popIn {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .success-checkmark {
@@ -216,4 +221,530 @@
   background: #1e3a8a;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
+}
+/* Container for all category items */
+.category-grid {
+  display: grid;
+  /* This creates 2 equal columns. Adjust '1fr 1fr' to '1fr 1fr 1fr' for 3 columns */
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* The box containing the checkbox and the operator name */
+.category-card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-height: 80px; /* Ensures they stay the same size */
+  justify-content: center;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cat-text {
+  font-size: 14px;
+}
+
+/* Style for the operator name text box */
+.operator-name-input {
+  margin-top: 8px;
+  padding: 6px;
+  font-size: 13px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* Mobile Responsive: Make it 1 column on small screens */
+@media (max-width: 600px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.op-assign-button {
+  margin-top: 10px;
+  background-color: #ffffff;
+  color: #1e40af;
+  border: 2px dashed #1e40af; /* බොත්තමක් ලෙස පෙනීමට dashed border එකක් */
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+.op-assign-button:hover {
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.op-done-btn:hover {
+  background-color: #1a368e;
+}
+/* Operator Popup Modal Styles */
+.op-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 6000;
+  backdrop-filter: blur(4px);
+}
+
+.op-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  width: 380px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.3s ease-out;
+}
+
+.op-popup-input {
+  width: 100%;
+  padding: 12px;
+  margin: 20px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.op-popup-input:focus {
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.op-done-btn {
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.op-done-btn:hover {
+  background-color: #1a368e;
+}
+
+/* Categories Grid Fix */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  padding-left: 0;
+}
+.op-popup-select {
+  width: 100%;
+  padding: 12px;
+  margin: 20px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f8fafc;
+  outline: none;
+  cursor: pointer;
+}
+
+.op-popup-select:focus {
+  border-color: #1e40af;
+}
+/* Popup Modal එකේ විශාලත්වය වෙනස් කිරීම */
+.large-modal {
+  width: 450px !important;
+  padding: 25px;
+}
+
+/* Dropdown label සහ select එක grouping කිරීම */
+.dropdown-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.dropdown-group label {
+  display: block;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: #1e40af;
+}
+
+.dropdown-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  font-size: 1rem;
+  outline: none;
+}
+
+.dropdown-group select:focus {
+  border-color: #1e40af;
+  background-color: #ffffff;
+}
+
+.op-done-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.checkbox-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  max-height: 120px;
+  overflow-y: auto; /* Scrollable if many names */
+  margin-bottom: 15px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+
+.checkbox-item input {
+  cursor: pointer;
+}
+
+.multi-select-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #1e40af;
+}
+.role-selection-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.role-pop-btn {
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Nested Role Modal */
+.role-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 7000;
+}
+
+.role-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.selection-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.role-close-btn {
+  width: 100%;
+  padding: 10px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+/* Selection Item Styles */
+.selection-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  transition: 0.3s;
+}
+
+/* On Leave - Red Color */
+.selection-item.on-leave {
+  color: #d32f2f;
+  background-color: #ffebee;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* On Event - Yellow/Orange Color */
+.selection-item.on-event {
+  color: #f57c00;
+  background-color: #fff3e0;
+}
+
+/* Available - Green/Default */
+.selection-item.available {
+  color: #2e7d32;
+}
+
+.status-tag {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.selection-item.on-leave {
+  background-color: #fff5f5;
+}
+
+.selection-item.on-event {
+  background-color: #fffdf2;
+}
+
+.selection-item.available:hover {
+  background-color: #f6fff6;
+}
+
+.selection-item input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+.submit-btn:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+/* --- MAIN PAGE CONTAINER --- */
+.form-page-container {
+  background-color: #f0f2f5;
+  padding: 100px 2% 60px 2%; /* Uses % for fluid side padding */
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.form-card {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 1100px; /* Increased to feel more "full screen" on desktop */
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
+}
+
+.form-title {
+  color: #1e40af;
+  font-size: clamp(1.8rem, 4vw, 2.5rem); /* Responsive font size */
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* --- FORM LAYOUT --- */
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap; /* Key for responsiveness */
+  align-items: center;
+  gap: 10px;
+}
+
+.input-group label {
+  flex: 0 0 200px; /* Fixed width on desktop */
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.input-group input {
+  flex: 1; /* Takes remaining space */
+  min-width: 280px; /* Prevents input from getting too tiny */
+  background-color: #f1f3f4;
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #1e40af;
+  background-color: #fff;
+}
+
+/* --- CATEGORIES & OPERATORS --- */
+.categories-section {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.category-grid {
+  display: grid;
+  /* Auto-responsive columns: fills screen, but min 200px per card */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.category-card {
+  background: #ffffff;
+  padding: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+/* --- DATE & TIME SECTION --- */
+.datetime-section {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.datetime-row {
+  display: flex;
+  flex-wrap: wrap; /* Stacks Date/Time on mobile */
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.datetime-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.date-input,
+.time-input {
+  flex: 1;
+  background-color: #f1f3f4;
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+/* --- MODAL RESPONSIVENESS --- */
+.op-modal {
+  width: 95%; /* Fluid on mobile */
+  max-width: 450px; /* Limited on desktop */
+  padding: 20px;
+}
+
+.role-modal {
+  width: 90%;
+  max-width: 350px;
+}
+
+/* --- MOBILE MEDIA QUERIES --- */
+@media (max-width: 768px) {
+  .form-card {
+    padding: 20px;
+    border-radius: 0; /* Full screen look on mobile */
+  }
+
+  .input-group label {
+    flex: 0 0 100%; /* Label takes full width on top */
+    margin-bottom: 5px;
+  }
+
+  .input-group input {
+    width: 100%;
+  }
+
+  .datetime-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .datetime-field {
+    justify-content: space-between;
+  }
+}
+
+/* --- SUBMIT BUTTON --- */
+.submit-btn {
+  width: 100%;
+  max-width: 100%;
+  margin: 30px auto 0 auto;
+  padding: 16px;
+  background-color: #1e40af;
+  color: white;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
 }

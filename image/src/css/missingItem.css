@@ -8,10 +8,10 @@
 }
 
 .missing-header-title {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: bold;
-  margin-bottom: 30px;
-  color: #000;
+  margin-bottom: 40px;
+  color: #1e3c72;
 }
 
 .missing-card {
@@ -96,5 +96,128 @@
   font-family: "Courier New", Courier, monospace;
   font-weight: bold;
 }
+.missing-container {
+  background-color: #f8fafc;
+  padding: 120px 20px 60px 20px;
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.missing-header-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #1e3c72;
+  text-align: center; /* Center title on all screens */
+}
 
+.missing-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* CRITICAL FOR RESPONSIVENESS */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.missing-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #000;
+  min-width: 800px; /* Prevents table from squishing too small */
+}
+
+.missing-table th,
+.missing-table td {
+  border: 1px solid #000;
+  padding: 15px 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* ... keep your existing button and header styles ... */
+
+/* --- MOBILE MEDIA QUERIES --- */
+
+@media (max-width: 768px) {
+  .missing-header-title {
+    font-size: 2rem; /* Smaller title on tablets/phones */
+    margin-bottom: 20px;
+  }
+
+  .missing-container {
+    padding: 100px 10px 40px 10px; /* Less padding on sides */
+  }
+
+  .missing-card {
+    padding: 10px; /* Tighten up card padding */
+    border-radius: 10px;
+  }
+
+  .missing-table th,
+  .missing-table td {
+    padding: 10px 5px; /* Smaller cell padding */
+    font-size: 0.9rem; /* Smaller text */
+  }
+}
+
+@media (max-width: 480px) {
+  .missing-header-title {
+    font-size: 1.5rem;
+  }
+
+  /* Make the horizontal scroll more obvious */
+  .missing-card::after {
+    content: "← Scroll to view actions →";
+    display: block;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 10px;
+  }
+}
+.missing-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* --- Scroll එක සඳහා අලුතින් එකතු කළ කොටස --- */
+  max-height: 600px; /* ඔබට අවශ්‍ය උස මෙතැනින් වෙනස් කරන්න */
+  overflow-y: auto; /* Vertical scroll (පහළට) */
+  overflow-x: auto; /* Horizontal scroll (පැත්තට - mobile සඳහා) */
+  position: relative;
+}
+
+/* Header එක Scroll කරනකොට නොපෙනී නොයා උඩම රැඳී තිබීමට (Sticky Header) */
+.missing-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #7d8da1; /* Header එකේ පසුබිම් වර්ණය */
+}
+
+/* Table එකේ border එක පෙනෙන්නට සහ scroll එක ලස්සනට තියාගන්න */
+.missing-table {
+  width: 100%;
+  border-collapse: separate; /* sticky header වැඩ කිරීමට මෙය 'separate' විය යුතුයි */
+  border-spacing: 0;
+  border: 2px solid #000;
+  min-width: 800px;
+}
+
+.missing-table th,
+.missing-table td {
+  border: 1px solid #000;
+  padding: 15px 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
