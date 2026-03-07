@@ -1,22 +1,15 @@
-import qrcode
+import qrcode 
 import os
 
 # දත්ත ඇතුළත් කිරීම (PDF එකෙන් ලබාගත් තොරතුරු)
 light_items = [
-    {"name": "K10 Mini-B 740", "qty": 16},
-    {"name": "K15 B-Eye 1940", "qty": 32},
-    {"name": "GL 400W 2 Colour MH", "qty": 16},
-    {"name": "GL 400w CTO MH", "qty": 16},
-    {"name": "12 x 40W Pan Beam Batton Zoom Bar", "qty": 12},
-    {"name": "2 Eye Blinder RGBWA", "qty": 5},
-    {"name": "3 in 1 BSW 420", "qty": 60},
-    {"name": "1000Z 2825w", "qty": 32},
-    {"name": "20R BSW HM-3826", "qty": 70},
-    {"name": "2520LED Matrix MH", "qty": 12},
+   
+    {"name": "12 x 40W Pan Beam Batton Zoom Bar", "qty": 1},
+   
 ]
 
 # ආරම්භක ID අංකය
-current_id = 222221
+current_id = 222754
 
 # QR codes ගබඩා කිරීමට folder එකක් සෑදීම
 output_dir = "Generated_QRs"

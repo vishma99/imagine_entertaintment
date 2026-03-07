@@ -7,26 +7,39 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "Admin",
   });
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errorMessage) setErrorMessage("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage("please enter a valid email address.");
+      return;
+    }
+    if (formData.confirmPassword !== formData.password) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
     try {
+      const { confirmPassword, ...dataToSend } = formData;
       const response = await fetch("http://localhost:5001/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
-        alert("Registration Successful!");
-        navigate("/login");
+        alert("OTP sent to your email!");
+        navigate("/verify-otp", { state: { email: formData.email } });
       } else {
         const data = await response.json();
         alert(data.message);
@@ -41,6 +54,11 @@ const Register = () => {
       <div className="auth-card1">
         <h2 className="auth-title1">Create Account</h2>
         <p className="auth-subtitle1">Join Imagine Entertainment Team</p>
+        {errorMessage && (
+          <p style={{ color: "red", textAlign: "center", fontSize: "14px" }}>
+            {errorMessage}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group1">
@@ -90,6 +108,17 @@ const Register = () => {
               placeholder="••••••••"
               onChange={handleChange}
               value={formData.password}
+              required
+            />
+          </div>
+          <div className="input-group1">
+            <label>Confrom Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="••••••••"
+              onChange={handleChange}
+              value={formData.confirmPassword}
               required
             />
           </div>

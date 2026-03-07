@@ -12,6 +12,10 @@ import ItemSummary from "./page/ItemSummary";
 import Register from "./page/Register";
 import Login from "./page/Login";
 import AdminDashboard from "./page/AdminDashboard";
+import VerifyOTP from "./page/VerifyOTP";
+import ForgotPassword from "./page/ForgotPassword";
+import VerifyOTPForgot from "./page/VerifyOTPForgot";
+import ResetPassword from "./page/ResetPassword";
 
 export default function App() {
   const isAuthenticated = localStorage.getItem("token");
@@ -72,16 +76,7 @@ export default function App() {
               isAuthenticated ? <ItemSummary /> : <Navigate to="/login" />
             }
           />
-          <Route
-            path="/register"
-            element={
-              isAuthenticated && userRole === "Admin" ? (
-                <Register />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+          <Route path="/register" element={<Register />} />
 
           <Route
             path="/adminDashboard"
@@ -94,6 +89,10 @@ export default function App() {
             }
           />
           <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="verify-otp" element={<VerifyOTP />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp-forgot" element={<VerifyOTPForgot />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </div>

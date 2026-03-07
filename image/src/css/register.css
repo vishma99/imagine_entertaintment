@@ -110,3 +110,41 @@
 .input-group1 input::-ms-input-placeholder {
   color: white;
 }
+.otp-box:focus {
+  border-color: #1a73e8 !important;
+  box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+  outline: none;
+}
+/* Remember Me සහ Forgot Password පෙළගැස්ම */
+.auth-options1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 13px;
+}
+
+.remember-me1 {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.remember-me1 input {
+  cursor: pointer;
+  accent-color: #00d2ff; /* Checkbox එකේ පාට වෙනස් කිරීම */
+}
+
+.forgot-password1 {
+  color: #00d2ff;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.forgot-password1:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}

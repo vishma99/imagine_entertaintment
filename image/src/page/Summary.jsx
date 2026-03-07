@@ -8,9 +8,12 @@ import Footer from "../compnent/Footer";
 const Summary = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ startDate: "", endDate: "" });
-
-  // State for the Print Confirmation Modal
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    dateType: "eventDate",
+  });
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [eventToPrint, setEventToPrint] = useState(null);
 
@@ -23,6 +26,7 @@ const Summary = () => {
       const response = await fetch("http://localhost:5001/api/events");
       const data = await response.json();
       setEvents(data);
+      setFilteredEvents(data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching summary data:", error);
@@ -43,97 +47,175 @@ const Summary = () => {
     return isInReturnPhase && isFullyReturned ? "Done" : "Pending";
   };
 
-  // --- PDF GENERATION LOGIC ---
-  const generatePDF = (event) => {
-    const doc = new jsPDF("l", "mm", "a4"); // Landscape orientation
+  // --- 1. PDF එක සෑදීමේ පොදු ශ්‍රිතය (Shared Logic) ---
+  const createPDFDocument = (event) => {
+    const doc = new jsPDF("p", "mm", "a4");
 
-    // Title
-    doc.setFontSize(18);
-    doc.text(`Event Summary Report: ${event.eventName}`, 14, 20);
-
-    // Header Info
+    // Header
+    doc.setFontSize(20);
+    doc.setTextColor(30, 60, 114);
+    doc.text("IMAGINE ENTERTAINMENT", 105, 15, { align: "center" });
     doc.setFontSize(12);
-    doc.text(`Company: ${event.companyName}`, 14, 30);
-    doc.text(`Contract: ${event.contractNumber}`, 14, 37);
-    doc.text(`Location: ${event.location}`, 14, 44);
+    doc.setTextColor(100);
+    doc.text("Event Summary & Inventory Report", 105, 22, { align: "center" });
+    doc.line(14, 25, 196, 25);
 
-    // Table Data
-    const tableColumn = [
-      "Category",
-      "Status",
-      "Setup Date/Time",
-      "Rehearsal Date/Time",
-      "Event Date/Time",
-      "End Date/Time",
-    ];
-    const tableRows = [
-      [
-        "LED",
-        getCategoryStatus(event, "led"),
-        `${event.setupDate} ${event.setupTime}`,
-        `${event.rehearsalDate} ${event.rehearsalTime}`,
-        `${event.eventDate} ${event.eventTime}`,
-        `${event.endDate} ${event.endTime}`,
-      ],
-      [
-        "Light",
-        getCategoryStatus(event, "light"),
-        `${event.setupDate} ${event.setupTime}`,
-        `${event.rehearsalDate} ${event.rehearsalTime}`,
-        `${event.eventDate} ${event.eventTime}`,
-        `${event.endDate} ${event.endTime}`,
-      ],
-      [
-        "Sound",
-        getCategoryStatus(event, "sound"),
-        `${event.setupDate} ${event.setupTime}`,
-        `${event.rehearsalDate} ${event.rehearsalTime}`,
-        `${event.eventDate} ${event.eventTime}`,
-        `${event.endDate} ${event.endTime}`,
-      ],
-      [
-        "Stage",
-        getCategoryStatus(event, "stage"),
-        `${event.setupDate} ${event.setupTime}`,
-        `${event.rehearsalDate} ${event.rehearsalTime}`,
-        `${event.eventDate} ${event.eventTime}`,
-        `${event.endDate} ${event.endTime}`,
-      ],
-    ];
+    // Info Grid
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+    doc.text(`Event: ${event.eventName}`, 14, 32);
+    doc.text(`Company: ${event.companyName}`, 14, 38);
+    doc.text(`Contract: ${event.contractNumber}`, 14, 44);
+    doc.text(`Location: ${event.location}`, 120, 32);
+    doc.text(`Status: ${event.status}`, 120, 38);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 120, 44);
 
-    // FIX: Use autoTable(doc, ...) instead of doc.autoTable(...)
+    // Equipment Logic
+    const itemData = (event.equipmentList || []).reduce((acc, curr) => {
+      const key = `${curr.category}-${curr.itemName}`;
+      if (!acc[key]) {
+        acc[key] = {
+          category: curr.category.toUpperCase(),
+          itemName: curr.itemName,
+          qty: 0,
+          missing: 0,
+        };
+      }
+      acc[key].qty += 1;
+      if (curr.isMissing) acc[key].missing += 1;
+      return acc;
+    }, {});
+
+    const equipmentRows = Object.values(itemData).map((item) => [
+      item.category,
+      item.itemName,
+      item.qty,
+      item.missing > 0 ? `${item.missing} (MISSING)` : "0",
+    ]);
+
     autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
       startY: 50,
-      theme: "grid",
-      headStyles: { fillColor: [125, 141, 161] }, // Your grey brand color
-
-      styles: { fontSize: 9, cellPadding: 2 },
+      head: [["Category", "Item Name", "Total Out", "Missing Qty"]],
+      body: equipmentRows,
+      theme: "striped",
+      headStyles: { fillColor: [30, 60, 114] },
+      didDrawCell: (data) => {
+        if (data.column.index === 3 && data.cell.text[0].includes("MISSING")) {
+          doc.setTextColor(231, 76, 60); // Red for missing
+        }
+      },
     });
 
+    // Category Status Table
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.text("Overall Category Status:", 14, finalY);
+    const summaryRows = ["LED", "Light", "Sound", "Stage", "Truss"]
+      .filter((cat) => event.categories?.[cat.toLowerCase()])
+      .map((cat) => [
+        cat,
+        getCategoryStatus(event, cat),
+        event.setupDate,
+        event.eventDate,
+      ]);
+
+    autoTable(doc, {
+      startY: finalY + 5,
+      head: [["Category", "Status", "Setup Date", "Event Date"]],
+      body: summaryRows,
+      theme: "grid",
+      headStyles: { fillColor: [125, 141, 161] },
+    });
+
+    return doc;
+  };
+
+  // --- 2. Download PDF Function ---
+  const generatePDF = (event) => {
+    const doc = createPDFDocument(event);
     doc.save(`${event.eventName}_Summary.pdf`);
     setShowPrintModal(false);
   };
 
-  const handleRowClick = (event) => {
-    setEventToPrint(event);
-    setShowPrintModal(true);
+  // --- 3. Email PDF Function ---
+  const sendPDFViaEmail = async (event) => {
+    const email = prompt("Please enter the email address:");
+    if (!email) return;
+
+    const doc = createPDFDocument(event);
+    const pdfBlob = doc.output("blob");
+
+    const formData = new FormData();
+    formData.append("pdf", pdfBlob, `${event.eventName}_Summary.pdf`);
+    formData.append("email", email);
+    formData.append("eventName", event.eventName);
+
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/send-summary-email",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (response.ok) {
+        alert("Email sent successfully!");
+      } else {
+        alert("Failed to send email.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error occurred while sending email.");
+    }
   };
 
-  // ... (imports remain the same)
+  const handleFilter = () => {
+    const { startDate, endDate, dateType } = filters;
+    if (!startDate || !endDate) {
+      alert("Please select dates.");
+      return;
+    }
+    const filtered = events.filter((event) => {
+      const eventDateValue = event[dateType];
+      if (!eventDateValue) return false;
+      const dateToCheck = new Date(eventDateValue).setHours(0, 0, 0, 0);
+      const start = new Date(startDate).setHours(0, 0, 0, 0);
+      const end = new Date(endDate).setHours(0, 0, 0, 0);
+      return dateToCheck >= start && dateToCheck <= end;
+    });
+    setFilteredEvents(filtered);
+  };
+
+  const resetFilter = () => {
+    setFilters({ startDate: "", endDate: "", dateType: "eventDate" });
+    setFilteredEvents(events);
+  };
 
   return (
     <>
       <Navbar />
       <main className="summary-page">
         <h1 className="page-header">Event Summary Report</h1>
-
         <div className="summary-content-card">
-          {/* Filter Bar remains same but styled via CSS */}
           <div className="filter-bar">
+            {/* Filter UI - Same as before */}
             <div className="filter-item">
-              <label>Start Date :</label>
+              <label>Filter By:</label>
+              <select
+                className="filter-input"
+                value={filters.dateType}
+                onChange={(e) =>
+                  setFilters({ ...filters, dateType: e.target.value })
+                }
+              >
+                <option value="setupDate">Setup Date</option>
+                <option value="rehearsalDate">Rehearsal Date</option>
+                <option value="eventDate">Event Date</option>
+                <option value="endDate">End Date</option>
+              </select>
+            </div>
+            <div className="filter-item">
+              <label>From:</label>
               <input
                 type="date"
                 className="filter-input"
@@ -144,7 +226,7 @@ const Summary = () => {
               />
             </div>
             <div className="filter-item">
-              <label>End Date :</label>
+              <label>To:</label>
               <input
                 type="date"
                 className="filter-input"
@@ -154,43 +236,35 @@ const Summary = () => {
                 }
               />
             </div>
-            <button className="filter-submit-btn">Filter</button>
+            <button className="filter-submit-btn" onClick={handleFilter}>
+              Filter
+            </button>
+            <button className="filter-reset-btn" onClick={resetFilter}>
+              Reset
+            </button>
           </div>
 
-          {/* --- Updated Table Container --- */}
           <div className="table-container">
             <table className="events-table">
               <thead className="sticky-thead">
                 <tr className="main-header">
-                  <th rowSpan="2">Company Name</th>
-                  <th rowSpan="2">Event Name</th>
-                  <th rowSpan="2">Location</th>
-                  <th rowSpan="2">Client Name</th>
-                  <th rowSpan="2">Contract #</th>
-                  <th colSpan="4">Date & Time</th>
+                  <th>Company</th>
+                  <th>Event Name</th>
+                  <th>Location</th>
+                  <th>Client</th>
+                  <th>Contract #</th>
+                  <th colSpan="4">Dates</th>
                   <th colSpan="4">Categories</th>
-                  <th rowSpan="2">Status</th>
-                </tr>
-                <tr className="sub-header">
-                  <th>Setup</th>
-                  <th>Rehearsal</th>
-                  <th>Event</th>
-                  <th>End</th>
-                  <th>LED</th>
-                  <th>Light</th>
-                  <th>Sound</th>
-                  <th>Stage</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="14" style={{ textAlign: "center" }}>
-                      Loading Summary Data...
-                    </td>
+                    <td colSpan="14">Loading...</td>
                   </tr>
                 ) : (
-                  events.map((row) => (
+                  filteredEvents.map((row) => (
                     <tr
                       key={row._id}
                       onClick={() => handleRowClick(row)}
@@ -201,23 +275,10 @@ const Summary = () => {
                       <td>{row.location}</td>
                       <td>{row.clientName}</td>
                       <td>{row.contractNumber}</td>
-                      <td className="date-cell">
-                        <div>{row.setupDate}</div>
-                        <div className="time-sub">{row.setupTime}</div>
-                      </td>
-                      <td className="date-cell">
-                        <div>{row.rehearsalDate}</div>
-                        <div className="time-sub">{row.rehearsalTime}</div>
-                      </td>
-                      <td className="date-cell">
-                        <div>{row.eventDate}</div>
-                        <div className="time-sub">{row.eventTime}</div>
-                      </td>
-                      <td className="date-cell">
-                        <div>{row.endDate}</div>
-                        <div className="time-sub">{row.endTime}</div>
-                      </td>
-
+                      <td className="date-cell">{row.setupDate}</td>
+                      <td className="date-cell">{row.rehearsalDate}</td>
+                      <td className="date-cell">{row.eventDate}</td>
+                      <td className="date-cell">{row.endDate}</td>
                       {["led", "light", "sound", "stage"].map((cat) => (
                         <td key={cat}>
                           <span
@@ -227,14 +288,11 @@ const Summary = () => {
                           </span>
                         </td>
                       ))}
-
-                      <td className="status-cell">
+                      <td>
                         <span
                           className={`status-badge overall-${row.status === "Completed" ? "done" : "progress"}`}
                         >
-                          {row.status === "Completed"
-                            ? "Event Done"
-                            : "In Progress"}
+                          {row.status}
                         </span>
                       </td>
                     </tr>
@@ -245,6 +303,44 @@ const Summary = () => {
           </div>
         </div>
       </main>
+
+      {/* --- MODAL FOR OPTIONS --- */}
+      {showPrintModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h2>Select Action</h2>
+            <p>
+              Report for <strong>{eventToPrint?.eventName}</strong>
+            </p>
+            <div
+              className="modal-actions"
+              style={{ flexDirection: "column", gap: "10px" }}
+            >
+              <button
+                className="update-btn"
+                style={{ width: "100%" }}
+                onClick={() => generatePDF(eventToPrint)}
+              >
+                Download PDF
+              </button>
+              <button
+                className="update-btn"
+                style={{ width: "100%", backgroundColor: "#10b981" }}
+                onClick={() => sendPDFViaEmail(eventToPrint)}
+              >
+                Send via Email
+              </button>
+              <button
+                className="close-btn"
+                style={{ width: "100%" }}
+                onClick={() => setShowPrintModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Footer />
     </>
   );

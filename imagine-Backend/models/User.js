@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema(
       enum: ["Admin", "HR", "Marketing", "Section User"],
       default: "Section User",
     },
+    isVerified: { type: Boolean, default: false },
+    isAdminApproved: { type: Boolean, default: false },
+    verificationToken: String,
+    resetOTP: { type: String },
+    resetOTPExpires: { type: Date },
   },
   { timestamps: true },
 );

@@ -4,6 +4,7 @@ import "../css/register.css";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(false); // Remember Me සඳහා state එක
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const Login = () => {
       const response = await fetch("http://localhost:5001/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify({ ...credentials, rememberMe }), // Backend එකට යවනවා
       });
 
       const data = await response.json();
@@ -32,13 +33,11 @@ const Login = () => {
 
         alert(`Welcome back, ${data.user.name}!`);
 
-        // --- මෙන්න මෙතැනයි වෙනස සිදු වෙන්නේ ---
         if (data.user.role === "Admin") {
-          navigate("/adminDashboard"); // Admin නම් කෙලින්ම Dashboard එකට
+          navigate("/adminDashboard");
         } else {
-          navigate("/"); // අනෙක් අය Home page එකට
+          navigate("/");
         }
-
         window.location.reload();
       } else {
         setError(data.message || "Invalid Login Details");
@@ -54,7 +53,6 @@ const Login = () => {
         <h2 className="auth-title1">Welcome Back</h2>
         <p className="auth-subtitle1">Login to your dashboard</p>
 
-        {/* Error message එකක් තිබේ නම් පෙන්වයි */}
         {error && (
           <p style={{ color: "red", textAlign: "center", fontSize: "14px" }}>
             {error}
@@ -84,10 +82,31 @@ const Login = () => {
               required
             />
           </div>
+
+         
+          <div className="auth-options1">
+            <label className="remember-me1">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <span>Remember Me</span>
+            </label>
+            <span
+              className="forgot-password1"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot Password?
+            </span>
+          </div>
+          {/* ------------------------------------------- */}
+
           <button type="submit" className="auth-btn1">
             Sign In
           </button>
         </form>
+
         <p className="auth-footer1">
           Don't have an account?{" "}
           <span onClick={() => navigate("/register")}>Register</span>
