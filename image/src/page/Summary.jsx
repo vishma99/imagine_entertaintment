@@ -23,7 +23,9 @@ const Summary = () => {
 
   const fetchSummaryData = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/events");
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/events",
+      );
       const data = await response.json();
       setEvents(data);
       setFilteredEvents(data);
@@ -151,7 +153,7 @@ const Summary = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/send-summary-email",
+        "https://imagine-entertaintment.onrender.com/api/send-summary-email",
         {
           method: "POST",
           body: formData,

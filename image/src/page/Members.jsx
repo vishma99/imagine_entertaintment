@@ -65,7 +65,7 @@ export default function Members() {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/members");
+      const response = await fetch("https://imagine-entertaintment.onrender.com/api/members");
       const data = await response.json();
       setMembers(data);
       setLoading(false);
@@ -84,7 +84,7 @@ export default function Members() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:5001/api/members/", {
+      const response = await fetch("https://imagine-entertaintment.onrender.com/api/members/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +109,7 @@ export default function Members() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:5001/api/members/update-status/${leaveData.memberId}`,
+        `https://imagine-entertaintment.onrender.com/api/members/update-status/${leaveData.memberId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

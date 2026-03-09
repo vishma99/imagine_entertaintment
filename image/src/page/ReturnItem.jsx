@@ -30,7 +30,7 @@ const ReturnItem = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5001/api/events/${eventId}`,
+          `https://imagine-entertaintment.onrender.com/api/events/${eventId}`,
         );
         const data = await response.json();
 
@@ -71,7 +71,7 @@ const ReturnItem = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5001/api/events/${eventId}/return-item-get?barcodeID=${trimmedBarcode}&category=${category}`,
+        `https://imagine-entertaintment.onrender.com/api/events/${eventId}/return-item-get?barcodeID=${trimmedBarcode}&category=${category}`,
       );
 
       if (response.ok) {
@@ -99,7 +99,7 @@ const ReturnItem = () => {
     if (scannedItems.length > 0) {
       try {
         await fetch(
-          `http://localhost:5001/api/events/${eventId}/mark-missing`,
+          `https://imagine-entertaintment.onrender.com/api/events/${eventId}/mark-missing`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

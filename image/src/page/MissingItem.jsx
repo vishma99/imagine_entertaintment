@@ -12,7 +12,9 @@ const MissingItem = () => {
   useEffect(() => {
     const fetchMissingItems = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/events");
+        const response = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/events",
+        );
         const events = await response.json();
 
         // Extract only items marked as isMissing: true from all events

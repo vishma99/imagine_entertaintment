@@ -61,15 +61,21 @@ export default function AdminDashboard() {
     // 2. FETCH DATA (Stats and Users)
     const fetchData = async () => {
       try {
-        const resEvents = await fetch("http://localhost:5001/api/events");
+        const resEvents = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/events",
+        );
         const events = await resEvents.json();
 
-        const resMembers = await fetch("http://localhost:5001/api/members");
+        const resMembers = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/members",
+        );
         const members = await resMembers.json();
-        const resItems = await fetch("http://localhost:5001/api/items/all");
+        const resItems = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/items/all",
+        );
         const itemsList = await resItems.json();
         const resUsers = await fetch(
-          "http://localhost:5001/api/user/all-users",
+          "https://imagine-entertaintment.onrender.com/api/user/all-users",
           {
             headers: { Authorization: `Bearer ${token}` },
           },
@@ -103,7 +109,7 @@ export default function AdminDashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5001/api/user/delete-user/${userToDelete.id}`,
+        `https://imagine-entertaintment.onrender.com/api/user/delete-user/${userToDelete.id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -125,14 +131,17 @@ export default function AdminDashboard() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:5001/api/members/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/members/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ ...newMember, isAvailable: true }),
         },
-        body: JSON.stringify({ ...newMember, isAvailable: true }),
-      });
+      );
 
       if (response.ok) {
         setShowMemberModal(false);
@@ -149,11 +158,14 @@ export default function AdminDashboard() {
   const handleAddItem = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/api/items/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newItem),
-      });
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/items/add",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newItem),
+        },
+      );
 
       const data = await response.json();
 

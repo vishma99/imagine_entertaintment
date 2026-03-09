@@ -37,7 +37,7 @@ const AddItem = () => {
     const fetchExistingItems = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/events/${eventId}`,
+          `https://imagine-entertaintment.onrender.com/api/events/${eventId}`,
         );
         const data = await response.json();
         if (response.ok) {
@@ -81,7 +81,7 @@ const AddItem = () => {
   const autoSaveToDatabase = async (updatedList) => {
     try {
       await fetch(
-        `http://localhost:5001/api/events/${eventId}/save-equipment`,
+        `https://imagine-entertaintment.onrender.com/api/events/${eventId}/save-equipment`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -102,7 +102,7 @@ const AddItem = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5001/api/items/${barcode.trim()}`,
+        `https://imagine-entertaintment.onrender.com/api/items/${barcode.trim()}`,
       );
       if (response.status === 404) {
         setErrorMessage("Item not found in barcode database.");
@@ -161,7 +161,7 @@ const AddItem = () => {
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/events/${eventId}/equipment/${itemToProcess.barcodeID}`,
+        `https://imagine-entertaintment.onrender.com/api/events/${eventId}/equipment/${itemToProcess.barcodeID}`,
         { method: "DELETE" },
       );
       if (response.ok) {

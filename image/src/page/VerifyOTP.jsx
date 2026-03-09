@@ -43,7 +43,7 @@ const VerifyOTP = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/user/verify-otp",
+        "https://imagine-entertaintment.onrender.com/api/user/verify-otp",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

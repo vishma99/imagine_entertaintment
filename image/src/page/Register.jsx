@@ -31,11 +31,14 @@ const Register = () => {
     }
     try {
       const { confirmPassword, ...dataToSend } = formData;
-      const response = await fetch("http://localhost:5001/api/user/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/user/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dataToSend),
+        },
+      );
 
       if (response.ok) {
         alert("OTP sent to your email!");

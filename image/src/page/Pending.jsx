@@ -39,7 +39,9 @@ const PendingEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/events");
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/events",
+      );
       const data = await response.json();
 
       setEvents(data);
@@ -52,7 +54,9 @@ const PendingEvents = () => {
 
   const fetchStaff = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/members");
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/members",
+      );
       const data = await response.json();
       setDbMembers(data);
     } catch (error) {
@@ -128,7 +132,7 @@ const PendingEvents = () => {
       };
 
       const response = await fetch(
-        `http://localhost:5001/api/events/${selectedEvent._id}`,
+        `https://imagine-entertaintment.onrender.com/api/events/${selectedEvent._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

@@ -18,7 +18,7 @@ const ItemSummary = () => {
   const fetchItemData = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5001/api/inventory-summary",
+        "https://imagine-entertaintment.onrender.com/api/inventory-summary",
       );
       const data = await response.json();
       setItems(data);

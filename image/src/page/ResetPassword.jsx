@@ -28,7 +28,7 @@ const ResetPassword = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/user/reset-password",
+        "https://imagine-entertaintment.onrender.com/api/user/reset-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../css/register.css"; 
+import "../css/register.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -10,9 +10,8 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      
       const response = await fetch(
-        "http://localhost:5001/api/user/forgot-password",
+        "https://imagine-entertaintment.onrender.com/api/user/forgot-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -24,7 +23,7 @@ const ForgotPassword = () => {
 
       if (response.ok) {
         alert("6-digit OTP sent to your email!");
-       
+
         navigate("/verify-otp-forgot", { state: { email } });
       } else {
         alert(data.message || "Something went wrong!");

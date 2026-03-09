@@ -18,11 +18,14 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5001/api/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...credentials, rememberMe }), // Backend එකට යවනවා
-      });
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/user/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...credentials, rememberMe }), // Backend එකට යවනවා
+        },
+      );
 
       const data = await response.json();
 
@@ -83,7 +86,6 @@ const Login = () => {
             />
           </div>
 
-         
           <div className="auth-options1">
             <label className="remember-me1">
               <input

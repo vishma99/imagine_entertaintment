@@ -59,11 +59,15 @@ const EventCreate = () => {
     const fetchData = async () => {
       try {
         // Members fetch කිරීම
-        const resMembers = await fetch("http://localhost:5001/api/members");
+        const resMembers = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/members",
+        );
         const membersData = await resMembers.json();
         setDbMembers(membersData);
 
-        const resEvents = await fetch("http://localhost:5001/api/events");
+        const resEvents = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/events",
+        );
         const eventsData = await resEvents.json();
         setAllEvents(eventsData);
       } catch (error) {
@@ -117,11 +121,14 @@ const EventCreate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/api/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/events",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
       if (response.ok) setShowSuccessModal(true);
     } catch (error) {
       alert("Connection Error.");

@@ -19,10 +19,10 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resEvents = await fetch("http://localhost:5001/api/events");
+        const resEvents = await fetch("https://imagine-entertaintment.onrender.com/api/events");
         const events = await resEvents.json();
 
-        const resMembers = await fetch("http://localhost:5001/api/members");
+        const resMembers = await fetch("https://imagine-entertaintment.onrender.com/api/members");
         const members = await resMembers.json();
 
         const totalMissing = events.reduce((acc, event) => {

@@ -80,7 +80,7 @@ export const verifyOTP = async (req, res) => {
     const adminEmails = admins.map((admin) => admin.email);
 
     if (adminEmails.length > 0) {
-      const approveLink = `http://localhost:5001/api/user/approve/${approveToken}`;
+      const approveLink = `https://imagine-entertaintment.onrender.com/api/user/approve/${approveToken}`;
 
       const adminMailOptions = {
         from: `"Imagine System" <${process.env.EMAIL_USER}>`,
