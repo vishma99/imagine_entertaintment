@@ -5,16 +5,23 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587, // Render සඳහා වඩාත් ගැලපෙන Port එක
-  secure: false, // 587 සඳහා මෙය false විය යුතුයි (STARTTLS භාවිතා කරයි)
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // මෙතැනට අකුරු 16ක App Password එක තිබිය යුතුයි
+    pass: process.env.EMAIL_PASS,
+  },
+  // මෙන්න මේ කොටස අලුතින් එක් කරන්න
+  connectionTimeout: 10000, // තත්පර 10කින් නතර කරන්න
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
+  dnsLookup: (hostname, options, callback) => {
+    // IPv4 (Family 4) පමණක් භාවිතා කිරීමට බල කිරීම
+    const dns = require("dns");
+    dns.lookup(hostname, { family: 4 }, callback);
   },
   tls: {
-    // Cloud Server එකකට Gmail සම්බන්ධ වීමේදී ඇතිවන බාධා ඉවත් කිරීමට මෙය අත්‍යවශ්‍යයි
     rejectUnauthorized: false,
-    minVersion: "TLSv1.2",
   },
 });
 
