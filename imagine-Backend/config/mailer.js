@@ -1,29 +1,19 @@
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-
-dotenv.config();
+import dns from "dns";
 
 const transporter = nodemailer.createTransport({
-  host: "74.125.142.108", // smtp.gmail.com වෙනුවට කෙලින්ම IP එක (IPv4)
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // Render වලදී IPv6 ප්‍රශ්නය මඟහරවා ගැනීමට මෙය අත්‍යවශ්‍යයි
+  lookup: (hostname, options, callback) => {
+    dns.lookup(hostname, { family: 4 }, callback);
+  },
   tls: {
     rejectUnauthorized: false,
-    minVersion: "TLSv1.2",
   },
 });
-
-// Mailer එක වැඩ කරනවාද කියා Logs වල බලන්න
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("CRITICAL: Mailer connection failed!", error.message);
-  } else {
-    console.log("SUCCESS: Mail Server is now CONNECTED!");
-  }
-});
-
-export default transporter;
