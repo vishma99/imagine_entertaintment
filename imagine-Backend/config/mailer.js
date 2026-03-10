@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import dns from "dns"; // dns module එක import කරන්න
 
 dotenv.config();
 
@@ -11,21 +12,19 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  // මෙන්න මේ කොටස අලුතින් එක් කරන්න
-  connectionTimeout: 10000, // තත්පර 10කින් නතර කරන්න
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
-  dnsLookup: (hostname, options, callback) => {
-    // IPv4 (Family 4) පමණක් භාවිතා කිරීමට බල කිරීම
-    const dns = require("dns");
+  // IPv4 පමණක් භාවිතා කිරීමට බල කිරීම (IPv6 මඟ හැරීමට)
+  lookup: (hostname, options, callback) => {
     dns.lookup(hostname, { family: 4 }, callback);
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
   tls: {
     rejectUnauthorized: false,
   },
 });
 
-// Mailer එක වැඩ කරනවාද කියා පරීක්ෂා කර බැලීම (Debug)
+// Mailer එක වැඩ කරනවාද කියා පරීක්ෂා කර බැලීම
 transporter.verify((error, success) => {
   if (error) {
     console.log("Mailer Connection Error: ", error);

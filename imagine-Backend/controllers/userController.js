@@ -21,8 +21,8 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
       role,
       verificationToken: otp,
-      isVerified: false, // OTP තහවුරු වන තෙක් false
-      isAdminApproved: false, // Admin Approve කරන තෙක් false
+      isVerified: false,
+      isAdminApproved: false,
     });
 
     await newUser.save();
@@ -34,16 +34,20 @@ export const registerUser = async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; text-align: center;">
           <h2>Account Verification</h2>
-          <p>Hi ${name}, thank you for registering with Imagine Entertainment.</p>
-          <p>Your OTP verification code is:</p>
+          <p>Hi ${name}, thank you for registering.</p>
           <h1 style="color: #1a73e8; font-size: 36px; letter-spacing: 5px;">${otp}</h1>
-          <p>This code will expire shortly. Do not share this code with anyone.</p>
         </div>
       `,
     };
 
-    await transporter.sendMail(mailOptions);
-    res.status(201).json({ message: "OTP sent to your email." });
+    // වැදගත්: මෙතැනදී await ඉවත් කර ඇත. 
+    // එවිට Email එක යැවෙන තෙක් බලා නොසිට වහාම Response එක ලබා දෙයි.
+    transporter.sendMail(mailOptions).catch(err => {
+        console.error("Background Email Error (OTP):", err.message);
+    });
+
+    res.status(201).json({ message: "OTP sent to your email. Please check (it may take a moment)." });
+    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -57,25 +61,19 @@ export const verifyOTP = async (req, res) => {
 
     if (!user) return res.status(400).json({ message: "Invalid OTP" });
 
-    user.isVerified = true; // Email එක තහවුරුයි
+    user.isVerified = true;
 
-    // වැදගත්: පරිශීලකයා Admin කෙනෙක් නම් කෙලින්ම Approve වේ.
-    // නැතිනම් Admin Approval අවශ්‍යයි.
     if (user.role === "Admin") {
       user.isAdminApproved = true;
       user.verificationToken = undefined;
       await user.save();
-      return res
-        .status(200)
-        .json({ message: "Admin account verified successfully!" });
+      return res.status(200).json({ message: "Admin account verified successfully!" });
     }
 
-    // Admin නොවන අයට Approval Token එකක් සෑදීම
     const approveToken = crypto.randomBytes(32).toString("hex");
     user.verificationToken = approveToken;
     await user.save();
 
-    // පද්ධතියේ සිටින සියලුම Adminවරුන්ගේ Email ලබා ගැනීම
     const admins = await User.find({ role: "Admin" });
     const adminEmails = admins.map((admin) => admin.email);
 
@@ -84,19 +82,18 @@ export const verifyOTP = async (req, res) => {
 
       const adminMailOptions = {
         from: `"Imagine System" <${process.env.EMAIL_USER}>`,
-        to: adminEmails, // සියලුම Adminවරුන්ට යැවීම
+        to: adminEmails,
         subject: "New User Approval Required",
-        html: `<h2>Approval Required</h2>
-               <p>User <b>${user.name}</b> (${user.role}) has verified their email.</p>
-               <p>Click below to approve this registration:</p>
-               <a href="${approveLink}" style="padding:10px; background:green; color:white; text-decoration:none;">Approve User</a>`,
+        html: `<h2>Approval Required</h2><p>User ${user.name} verified email.</p><a href="${approveLink}">Approve User</a>`,
       };
-      await transporter.sendMail(adminMailOptions);
+
+      // මෙතැනදීත් await ඉවත් කරන්න
+      transporter.sendMail(adminMailOptions).catch(err => {
+          console.error("Background Email Error (Admin Notify):", err.message);
+      });
     }
 
-    res
-      .status(200)
-      .json({ message: "Email verified! Waiting for Admin approval." });
+    res.status(200).json({ message: "Email verified! Waiting for Admin approval." });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
