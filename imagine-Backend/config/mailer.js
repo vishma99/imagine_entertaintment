@@ -1,15 +1,19 @@
 import nodemailer from "nodemailer";
 import dns from "dns";
 
-// IPv4 පමණක් භාවිතා කිරීමට බල කිරීම
+// IPv4 වලට ප්‍රමුඛතාවය ලබා දීම (Render සඳහා වැදගත්)
 dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail", // කෙලින්ම service එක gmail ලෙස දෙන්න
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // මෙන්න මේ සැකසුම් ටික අනිවාර්යයෙන් ඇතුළත තිබිය යුතුයි
+  connectionTimeout: 20000,
+  greetingTimeout: 15000,
+  socketTimeout: 25000,
   tls: {
     rejectUnauthorized: false,
   },
