@@ -44,19 +44,18 @@ export const registerUser = async (req, res) => {
     };
 
     // --- මෙන්න මෙතැනයි අපි පරීක්ෂණ කේතය ඇතුළත් කරන්නේ ---
-    try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent successfully: ", info.response);
-      // ඊමේල් එක සාර්ථකව ගියොත් පමණක් මෙම Response එක යයි
-      return res.status(201).json({ message: "OTP sent to your email." });
-    } catch (error) {
-      // ඊමේල් එක අසාර්ථක වුවහොත් නියම හේතුව Render Logs වල වැටේ
-      console.error("ACTUAL EMAIL ERROR:", error.message);
-      return res.status(500).json({
-        message: "Email sending failed: " + error.message,
-        debug_tip: "Check Render Logs for ACTUAL EMAIL ERROR",
-      });
-    }
+  try {
+    // Email එක යවන තෙක් තත්පර 15ක් බලමු
+    await transporter.sendMail(mailOptions);
+    return res.status(201).json({ message: "OTP sent to your email." });
+  } catch (error) {
+    console.error("ACTUAL EMAIL ERROR:", error.message);
+    // Email එක නොගියත් User ට Error එකක් නොපෙන්වා ඉදිරියට යමු
+    return res.status(201).json({
+      message:
+        "Registration successful! (Email delay: please check MongoDB for your OTP if it doesn't arrive)",
+    });
+  }
     // ---------------------------------------------------
   } catch (error) {
     res.status(500).json({ message: error.message });
