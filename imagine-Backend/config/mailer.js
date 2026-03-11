@@ -1,12 +1,20 @@
-import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  auth: {
-    user: process.env.EMAIL_USER, // ඔයා Brevo හදන්න පාවිච්චි කරපු Email එක
-    pass: process.env.BREVO_API_KEY, // අර අලුතින් ගත්ත API Key එක
-  },
-});
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKey = defaultClient.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
-export default transporter;
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+export const sendEmail = async (to, subject, htmlContent) => {
+  const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+  sendSmtpEmail.subject = subject;
+  sendSmtpEmail.htmlContent = htmlContent;
+  sendSmtpEmail.sender = {
+    name: "Imagine Entertainment",
+    email: process.env.EMAIL_USER,
+  };
+  sendSmtpEmail.to = [{ email: to }];
+
+  return apiInstance.sendTransacEmail(sendSmtpEmail);
+};
