@@ -1,31 +1,27 @@
 import nodemailer from "nodemailer";
 import dns from "dns";
 
-// IPv4 වලට ප්‍රමුඛතාවය ලබා දීම (Render සඳහා වැදගත්)
+// IPv4 වලට ප්‍රමුඛතාවය දීම
 dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // TLS සඳහා false විය යුතුයි
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  // මෙන්න මේ සැකසුම් ටික අනිවාර්යයෙන් ඇතුළත තිබිය යුතුයි
-  connectionTimeout: 20000,
-  greetingTimeout: 15000,
-  socketTimeout: 25000,
+  // මෙන්න මේ Timeout අගයන් ටික අනිවාර්යයෙන්ම එක් කරන්න
+  connectionTimeout: 40000, // තත්පර 40ක් දක්වා වැඩි කළා
+  greetingTimeout: 30000,
+  socketTimeout: 45000,
   tls: {
     rejectUnauthorized: false,
+    minVersion: "TLSv1.2",
   },
 });
 
-// සම්බන්ධතාවය පරීක්ෂා කිරීම
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("Gmail Connection Error: ", error.message);
-  } else {
-    console.log("Gmail is ready to send OTPs!");
-  }
-});
+// verify කොටස ඉවත් කරන්න - එය Render එකේදී ගැටලු ඇති කරයි
 
 export default transporter;
