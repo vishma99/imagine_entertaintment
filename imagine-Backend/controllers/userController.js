@@ -8,10 +8,12 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
+    // 1. පරිශීලකයා දැනටමත් ඉන්නවාදැයි බැලීම
     const userExists = await User.findOne({ email });
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
 
+    // 2. දත්ත සකස් කිරීම
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -25,6 +27,7 @@ export const registerUser = async (req, res) => {
       isAdminApproved: false,
     });
 
+    // 3. Database එකේ Userව Save කිරීම
     await newUser.save();
 
     const mailOptions = {
@@ -40,14 +43,21 @@ export const registerUser = async (req, res) => {
       `,
     };
 
-    // වැදගත්: මෙතැනදී await ඉවත් කර ඇත. 
-    // එවිට Email එක යැවෙන තෙක් බලා නොසිට වහාම Response එක ලබා දෙයි.
-    transporter.sendMail(mailOptions).catch(err => {
-        console.error("Background Email Error (OTP):", err.message);
-    });
-
-    res.status(201).json({ message: "OTP sent to your email. Please check (it may take a moment)." });
-    
+    // --- මෙන්න මෙතැනයි අපි පරීක්ෂණ කේතය ඇතුළත් කරන්නේ ---
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent successfully: ", info.response);
+      // ඊමේල් එක සාර්ථකව ගියොත් පමණක් මෙම Response එක යයි
+      return res.status(201).json({ message: "OTP sent to your email." });
+    } catch (error) {
+      // ඊමේල් එක අසාර්ථක වුවහොත් නියම හේතුව Render Logs වල වැටේ
+      console.error("ACTUAL EMAIL ERROR:", error.message);
+      return res.status(500).json({
+        message: "Email sending failed: " + error.message,
+        debug_tip: "Check Render Logs for ACTUAL EMAIL ERROR",
+      });
+    }
+    // ---------------------------------------------------
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
