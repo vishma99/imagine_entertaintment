@@ -689,3 +689,36 @@
     overflow-y: initial !important; /* Scroll එක ඉවත් කර Drop-down එක පෙන්වයි */
   }
 }
+/* සියලුම Inputs සහ Selects එකම පළලකට ගැනීම */
+.form-group input,
+.form-group select {
+  width: 100% !important; /* මුළු පළලම ලබා ගැනීම */
+  box-sizing: border-box !important; /* Padding නිසා පළල වැඩි වීම වළක්වයි */
+  display: block;
+  padding: 12px;
+  font-size: 16px; /* Mobile වල Zoom වීම වළක්වයි */
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+/* Drop-down එකේ ඇතුළත ඇති Options වල පළල පාලනය */
+.form-group select option {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Mobile එකේදී Modal එක ඇතුළත ඉඩ ඉතිරි කිරීම */
+@media (max-width: 768px) {
+  .admin-modal, .leave-modal {
+    width: 90% !important;
+    padding: 20px !important;
+    box-sizing: border-box;
+  }
+  
+  /* Form group එක ඇතුළේ ඇති labels වලටත් ඉඩ ලබා දීම */
+  .form-group {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
