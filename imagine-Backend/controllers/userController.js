@@ -7,6 +7,8 @@ import { sendEmail } from "../config/mailer.js";
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+
+    // User පරීක්ෂාව සහ Save කිරීම
     const userExists = await User.findOne({ email });
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
@@ -25,12 +27,16 @@ export const registerUser = async (req, res) => {
     });
     await newUser.save();
 
-    // ඊමේල් එක පසුබිමේ යැවීම
-    sendEmail(email, "Your OTP Verification Code", `<h1>OTP: ${otp}</h1>`)
-      .then(() => console.log("Email sent successfully!"))
-      .catch((err) => console.error("Email Error:", err.message));
+    // --- නිර්දේශිත ක්‍රමය (Try-Catch) ---
+    try {
+      await sendEmail(email, "Verification OTP", `<h1>Your OTP is ${otp}</h1>`);
+      console.log("Email sent successfully via API!");
+    } catch (error) {
+      // ඊමේල් එක යැවීමට නොහැකි වුණත් User සේව් වී ඇති නිසා මෙතැනදී Log එකක් පෙන්වමු
+      console.error("API Email Error:", error.message);
+    }
 
-    res.status(201).json({ message: "OTP sent! Please check your email." });
+    res.status(201).json({ message: "Registration successful. OTP sent!" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -17,10 +17,6 @@ router.get("/approve/:token", approveUser);
 
 const JWT_SECRET = "ImagineEnt_Secret_Key_2026"; // මෙය ඔබේ .env එකේ ඇති අගයට සමාන විය යුතුයි
 
-
-
-
-
 // --- MIDDLEWARE SECTION ---
 
 // Token එක පරීක්ෂා කිරීම
