@@ -65,7 +65,9 @@ export default function Members() {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch("https://imagine-entertaintment.onrender.com/api/members");
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/members",
+      );
       const data = await response.json();
       setMembers(data);
       setLoading(false);
@@ -80,27 +82,44 @@ export default function Members() {
   }, []);
 
   // 1. ADD NEW MEMBER FUNCTION
+  // 1. ADD NEW MEMBER FUNCTION (නිවැරදි කළ කේතය)
   const handleAddMember = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+
+    // Driver හෝ Cleaning නම් position එක "Normal" ලෙස ස්වයංක්‍රීයව සැකසීම
+    let memberData = { ...newMember, isAvailable: true };
+
+    if (newMember.category === "Driver" || newMember.category === "Cleaning") {
+      memberData.position = "Normal";
+    }
+
     try {
-      const response = await fetch("https://imagine-entertaintment.onrender.com/api/members/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://imagine-entertaintment.onrender.com/api/members/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(memberData),
         },
-        body: JSON.stringify({ ...newMember, isAvailable: true }),
-      });
+      );
+
+      const data = await response.json();
 
       if (response.ok) {
         setShowMemberModal(false);
         setShowSuccessModal(true);
         setNewMember({ name: "", nic: "", category: "", position: "" });
         fetchMembers();
+      } else {
+        // වැරැද්ද කුමක්දැයි දැන ගැනීමට alert එකක් දාමු
+        alert(`Error: ${data.message || "Failed to add member"}`);
       }
     } catch (err) {
-      alert("Error adding member");
+      alert("Error adding member: " + err.message);
     }
   };
 
