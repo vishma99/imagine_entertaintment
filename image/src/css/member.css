@@ -618,107 +618,39 @@
     font-size: 1.2rem;
   }
 }
-/* Modal එක ඇතුළේ තියෙන Drop-down එක එළියට පෙනෙන්නට සැලැස්වීම */
-.admin-modal,
-.team-modal {
-  overflow: visible !important; /* Modal එක ඇතුළේ දේවල් කැපී යාම නතර කරයි */
-}
-
-/* Modal එකේ body එකට scroll එකක් අවශ්‍ය නම් පමණක් මෙය භාවිතා කරන්න */
-/* නමුත් drop-down එක පෙනෙන්නට නම් overflow visible විය යුතුයි */
-.admin-modal form {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Select (Drop-down) එකේ පෙනුම සහ එය Modal එක උඩින් පෙනීමට සැලැස්වීම */
-.form-group select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background-color: white;
-  cursor: pointer;
-  z-index: 1001; /* Modal එකේ අනෙක් දේවල් වලට වඩා උඩින් තැබීම */
-}
-
-/* Mobile එකේදී Modal එක screen එකෙන් පිටතට යාම වැළැක්වීම */
-@media (max-width: 768px) {
-  .admin-modal {
-    width: 90%;
-    margin: 20px;
-    padding: 15px;
-    max-height: 85vh; /* උස ප්‍රමාණය සීමා කිරීම */
-    overflow-y: auto !important; /* Mobile එකේදී scroll එක අවශ්‍ය වේ */
-  }
-}
-/* 1. Modal එක ඇතුළේ ඇති Select එකේ සීමාවන් නිදහස් කිරීම */
-.admin-modal {
-  overflow: visible !important; /* Modal එක ඇතුළේ කිසිවක් සැඟවීම නතර කරයි */
-  position: relative;
-}
-
-/* 2. Form එක ඇතුළත ඇති overflow පාලනය කිරීම */
-.admin-modal form {
-  overflow: visible !important;
-}
-
-/* 3. Form Group එකේ overflow පාලනය */
-.form-group {
-  position: relative;
-  overflow: visible !important;
-  margin-bottom: 20px;
-}
-
-/* 4. Drop-down එක (Select Tag) නිවැරදි කිරීම */
-.form-group select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background-color: white;
-  appearance: none; /* බ්‍රවුසරයේ පෙරනිමි පෙනුම ඉවත් කිරීමට (අත්‍යවශ්‍ය නම්) */
-  cursor: pointer;
-}
-
-/* 5. Mobile එකේදී Modal එක ලස්සනට පෙන්වීමට */
-@media (max-width: 768px) {
-  .admin-modal {
-    width: 90%;
-    max-height: 90vh; /* Screen එකෙන් පිටතට යාම වළක්වයි */
-    overflow-y: initial !important; /* Scroll එක ඉවත් කර Drop-down එක පෙන්වයි */
-  }
-}
-/* සියලුම Inputs සහ Selects එකම පළලකට ගැනීම */
-.form-group input,
-.form-group select {
-  width: 100% !important; /* මුළු පළලම ලබා ගැනීම */
+/* සියලුම Input සහ Select වල පළල Pop-up එකට සමාන කිරීම */
+.admin-modal input,
+.admin-modal select,
+.leave-modal select {
+  width: 100% !important; /* මුළු පළලම ලබා ගනී */
   box-sizing: border-box !important; /* Padding නිසා පළල වැඩි වීම වළක්වයි */
   display: block;
+  margin-top: 5px;
   padding: 12px;
-  font-size: 16px; /* Mobile වල Zoom වීම වළක්වයි */
+  font-size: 16px; /* Mobile වලදී Zoom වීම වළක්වයි */
   border: 1px solid #cbd5e1;
   border-radius: 8px;
 }
 
-/* Drop-down එකේ ඇතුළත ඇති Options වල පළල පාලනය */
-.form-group select option {
+/* Modal එක ඇතුළත Form Group එකට දෙපැත්තෙන් ඉඩ තැබීම */
+.form-group {
   width: 100%;
-  max-width: 100%;
+  padding: 0;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
-/* Mobile එකේදී Modal එක ඇතුළත ඉඩ ඉතිරි කිරීම */
+/* Mobile Screen එකේදී Modal එක ඇතුළතින් කැපී යාම වැළැක්වීම */
 @media (max-width: 768px) {
-  .admin-modal, .leave-modal {
-    width: 90% !important;
+  .admin-modal, .leave-modal, .team-modal {
+    width: 92% !important; /* දෙපැත්තෙන් පොඩි ඉඩක් තබයි */
+    max-width: 450px;
     padding: 20px !important;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
+    overflow-x: hidden; /* තිරස් අතට scroll වීම නතර කරයි */
   }
-  
-  /* Form group එක ඇතුළේ ඇති labels වලටත් ඉඩ ලබා දීම */
-  .form-group {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+
+  .modal-header h2 {
+    font-size: 1.2rem; /* Mobile එකේදී මාතෘකාව කුඩා කරයි */
   }
 }
