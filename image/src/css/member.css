@@ -618,39 +618,43 @@
     font-size: 1.2rem;
   }
 }
-/* සියලුම Input සහ Select වල පළල Pop-up එකට සමාන කිරීම */
-.admin-modal input,
-.admin-modal select,
-.leave-modal select {
-  width: 100% !important; /* මුළු පළලම ලබා ගනී */
-  box-sizing: border-box !important; /* Padding නිසා පළල වැඩි වීම වළක්වයි */
+/* 1. Modal එක ඇතුළත ඇති සියලුම container වල පළල සීමා කිරීම */
+.admin-modal,
+.leave-modal {
+  width: 90% !important;
+  max-width: 450px !important;
+  padding: 25px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important; /* Dropdown එක කැපී යාම වළක්වයි */
+}
+
+/* 2. Select box එක සහ dropdown ලැයිස්තුව Modal එකේ පළලට වඩා වැඩි වීම වැළැක්වීම */
+.form-group select {
+  width: 100% !important;
+  max-width: 100% !important; /* අනිවාර්යයෙන්ම Modal එකේ පළලට සමාන කරයි */
+  box-sizing: border-box !important;
   display: block;
-  margin-top: 5px;
   padding: 12px;
-  font-size: 16px; /* Mobile වලදී Zoom වීම වළක්වයි */
+  font-size: 16px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
+  background-color: #fff;
+  /* බ්‍රවුසරයේ ඇති අමතර පළල පාලනය කිරීමට */
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Modal එක ඇතුළත Form Group එකට දෙපැත්තෙන් ඉඩ තැබීම */
-.form-group {
+/* 3. Dropdown එක ඇතුළත ඇති options වල පළල පාලනය */
+/* සටහන: සමහර බ්‍රවුසර වල මෙය සෘජුව වෙනස් කළ නොහැකි නිසා ඉහත සීමාවන් වැදගත් වේ */
+.form-group select option {
   width: 100%;
-  padding: 0;
-  margin-bottom: 20px;
-  box-sizing: border-box;
+  max-width: 100%;
 }
 
-/* Mobile Screen එකේදී Modal එක ඇතුළතින් කැපී යාම වැළැක්වීම */
-@media (max-width: 768px) {
-  .admin-modal, .leave-modal, .team-modal {
-    width: 92% !important; /* දෙපැත්තෙන් පොඩි ඉඩක් තබයි */
-    max-width: 450px;
-    padding: 20px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden; /* තිරස් අතට scroll වීම නතර කරයි */
-  }
-
-  .modal-header h2 {
-    font-size: 1.2rem; /* Mobile එකේදී මාතෘකාව කුඩා කරයි */
-  }
+/* 4. Form Group එකේ පිරිසැලසුම නිවැරදි කිරීම */
+.form-group {
+  width: 100% !important;
+  margin-bottom: 20px;
+  text-align: left;
+  box-sizing: border-box !important;
 }
