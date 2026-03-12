@@ -619,7 +619,8 @@
   }
 }
 /* Modal එක ඇතුළේ තියෙන Drop-down එක එළියට පෙනෙන්නට සැලැස්වීම */
-.admin-modal, .team-modal {
+.admin-modal,
+.team-modal {
   overflow: visible !important; /* Modal එක ඇතුළේ දේවල් කැපී යාම නතර කරයි */
 }
 
@@ -649,5 +650,42 @@
     padding: 15px;
     max-height: 85vh; /* උස ප්‍රමාණය සීමා කිරීම */
     overflow-y: auto !important; /* Mobile එකේදී scroll එක අවශ්‍ය වේ */
+  }
+}
+/* 1. Modal එක ඇතුළේ ඇති Select එකේ සීමාවන් නිදහස් කිරීම */
+.admin-modal {
+  overflow: visible !important; /* Modal එක ඇතුළේ කිසිවක් සැඟවීම නතර කරයි */
+  position: relative;
+}
+
+/* 2. Form එක ඇතුළත ඇති overflow පාලනය කිරීම */
+.admin-modal form {
+  overflow: visible !important;
+}
+
+/* 3. Form Group එකේ overflow පාලනය */
+.form-group {
+  position: relative;
+  overflow: visible !important;
+  margin-bottom: 20px;
+}
+
+/* 4. Drop-down එක (Select Tag) නිවැරදි කිරීම */
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: white;
+  appearance: none; /* බ්‍රවුසරයේ පෙරනිමි පෙනුම ඉවත් කිරීමට (අත්‍යවශ්‍ය නම්) */
+  cursor: pointer;
+}
+
+/* 5. Mobile එකේදී Modal එක ලස්සනට පෙන්වීමට */
+@media (max-width: 768px) {
+  .admin-modal {
+    width: 90%;
+    max-height: 90vh; /* Screen එකෙන් පිටතට යාම වළක්වයි */
+    overflow-y: initial !important; /* Scroll එක ඉවත් කර Drop-down එක පෙන්වයි */
   }
 }
