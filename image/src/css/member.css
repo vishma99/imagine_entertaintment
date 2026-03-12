@@ -618,3 +618,36 @@
     font-size: 1.2rem;
   }
 }
+/* Modal එක ඇතුළේ තියෙන Drop-down එක එළියට පෙනෙන්නට සැලැස්වීම */
+.admin-modal, .team-modal {
+  overflow: visible !important; /* Modal එක ඇතුළේ දේවල් කැපී යාම නතර කරයි */
+}
+
+/* Modal එකේ body එකට scroll එකක් අවශ්‍ය නම් පමණක් මෙය භාවිතා කරන්න */
+/* නමුත් drop-down එක පෙනෙන්නට නම් overflow visible විය යුතුයි */
+.admin-modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Select (Drop-down) එකේ පෙනුම සහ එය Modal එක උඩින් පෙනීමට සැලැස්වීම */
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  z-index: 1001; /* Modal එකේ අනෙක් දේවල් වලට වඩා උඩින් තැබීම */
+}
+
+/* Mobile එකේදී Modal එක screen එකෙන් පිටතට යාම වැළැක්වීම */
+@media (max-width: 768px) {
+  .admin-modal {
+    width: 90%;
+    margin: 20px;
+    padding: 15px;
+    max-height: 85vh; /* උස ප්‍රමාණය සීමා කිරීම */
+    overflow-y: auto !important; /* Mobile එකේදී scroll එක අවශ්‍ය වේ */
+  }
+}
