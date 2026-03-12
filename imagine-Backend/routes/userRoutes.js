@@ -10,7 +10,16 @@ import {
 import { sendEmail } from "../config/mailer.js";
 
 const router = express.Router();
-const JWT_SECRET = "YOUR_SECRET_KEY"; // මෙය ඔබේ .env එකේ ඇති අගයට සමාන විය යුතුයි
+
+router.post("/register", registerUser);
+router.post("/verify-otp", verifyOTP);
+router.get("/approve/:token", approveUser);
+
+const JWT_SECRET = "ImagineEnt_Secret_Key_2026"; // මෙය ඔබේ .env එකේ ඇති අගයට සමාන විය යුතුයි
+
+
+
+
 
 // --- MIDDLEWARE SECTION ---
 
@@ -41,12 +50,6 @@ const authorizeRoles = (...roles) => {
     next();
   };
 };
-
-// --- ROUTES SECTION ---
-
-router.post("/register", registerUser);
-router.post("/verify-otp", verifyOTP);
-router.get("/approve/:token", approveUser);
 
 // [LOGIN]
 router.post("/login", async (req, res) => {

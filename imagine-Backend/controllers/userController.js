@@ -25,11 +25,10 @@ export const registerUser = async (req, res) => {
     });
     await newUser.save();
 
-    // API හරහා ඊමේල් යැවීම
-    const html = `<div style="text-align:center;"><h2>OTP Code</h2><h1 style="color:blue;">${otp}</h1></div>`;
-    sendEmail(email, "Your OTP Verification Code", html).catch((err) =>
-      console.error("Brevo Error:", err.message),
-    );
+    // ඊමේල් එක පසුබිමේ යැවීම
+    sendEmail(email, "Your OTP Verification Code", `<h1>OTP: ${otp}</h1>`)
+      .then(() => console.log("Email sent successfully!"))
+      .catch((err) => console.error("Email Error:", err.message));
 
     res.status(201).json({ message: "OTP sent! Please check your email." });
   } catch (error) {
