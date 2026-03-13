@@ -75,38 +75,50 @@ const ReturnItem = () => {
     const trimmedBarcode = barcode.trim();
     if (!trimmedBarcode) return;
 
-    // මුලින්ම මුළු Event එකේම බඩු අතර මේ බාර්කෝඩ් එක තිබේදැයි බලයි
-    const itemInEvent = allEventItems.find(
-      (item) => item.barcodeID === trimmedBarcode,
-    );
-
-    if (!itemInEvent) {
-      playSound("error");
-      setErrorMessage("This item is not assigned to this event.");
-      setShowErrorModal(true);
-      setBarcode("");
-      return;
-    }
-
     try {
-      // මෙහිදී භාණ්ඩයේම සැබෑ category එක backend එකට යවයි (itemInEvent.category)
+      // 1. මුලින්ම බාර්කෝඩ් එක පද්ධතියේ (Items Database) තියෙනවාදැයි බලමු
+      const itemCheckResponse = await fetch(
+        `https://imagine-entertaintment.onrender.com/api/items/${trimmedBarcode}`,
+      );
+
+      if (itemCheckResponse.status === 404) {
+        playSound("error");
+        setErrorMessage("This barcode does not exist in the system database!");
+        setShowErrorModal(true);
+        setBarcode("");
+        return;
+      }
+
+      const itemData = await itemCheckResponse.json();
+
+      // 2. දැන් බලමු මේ අයිතමය මේ ඉවෙන්ට් එකට (allEventItems) අදාළ එකක්ද කියලා
+      const itemInEvent = allEventItems.find(
+        (item) => item.barcodeID === trimmedBarcode,
+      );
+
+      if (!itemInEvent) {
+        playSound("error");
+        setErrorMessage(
+          `The item "${itemData.itemName}" is NOT assigned to this event!`,
+        );
+        setShowErrorModal(true);
+        setBarcode("");
+        return;
+      }
+
+      // 3. සියල්ල හරි නම් Return එක සිදු කරමු
       const response = await fetch(
         `https://imagine-entertaintment.onrender.com/api/events/${eventId}/return-item-get?barcodeID=${trimmedBarcode}&category=${itemInEvent.category}`,
       );
 
       if (response.ok) {
         playSound("success");
-
-        // පෙන්වන Table එකෙන් අදාළ භාණ්ඩය ඉවත් කරයි
         setScannedItems((prev) =>
-          prev.filter((item) => item.barcodeID !== trimmedBarcode),
+          prev.filter((i) => i.barcodeID !== trimmedBarcode),
         );
-
-        // මුළු ලැයිස්තුවත් යාවත්කාලීන කරයි
         setAllEventItems((prev) =>
-          prev.filter((item) => item.barcodeID !== trimmedBarcode),
+          prev.filter((i) => i.barcodeID !== trimmedBarcode),
         );
-
         setBarcode("");
       } else {
         playSound("error");
@@ -115,7 +127,8 @@ const ReturnItem = () => {
         setBarcode("");
       }
     } catch (err) {
-      setErrorMessage("Server connection failed.");
+      playSound("error");
+      setErrorMessage("Server connection failed. Please try again.");
       setShowErrorModal(true);
     }
   };
