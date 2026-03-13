@@ -97,5 +97,20 @@ router.put("/update-status/:id", async (req, res) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 });
+// DELETE a member
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedMember = await Member.findByIdAndDelete(id);
+
+    if (!deletedMember) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json({ message: "Member deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router;

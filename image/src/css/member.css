@@ -686,3 +686,17 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+.member-list-item {
+  transition: background 0.3s;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.member-list-item:hover {
+  background-color: #f1f5f9;
+}
+
+.member-list-item button:hover {
+  background-color: #b91c1c !important;
+  transform: scale(1.05);
+}

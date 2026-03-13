@@ -149,6 +149,38 @@ export default function Members() {
     }
   };
 
+  const handleDeleteMember = async (memberId, name) => {
+    // ඉවත් කිරීමට පෙර තහවුරු කරගැනීම (Confirmation)
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${name}?`,
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(
+        `https://imagine-entertaintment.onrender.com/api/members/${memberId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response.ok) {
+        alert("Member removed successfully.");
+        // ලැයිස්තුව නැවත refresh කරන්න
+        fetchMembers();
+        // Modal එක වසා දැමීමට හෝ update කිරීමට
+        setSelectedCategory(null);
+      } else {
+        alert("Failed to delete member.");
+      }
+    } catch (err) {
+      alert("Error deleting member: " + err.message);
+    }
+  };
+
   // 3. RETURN FROM LEAVE FUNCTION
   const handleReturnUpdate = async (e) => {
     e.preventDefault();
@@ -298,14 +330,50 @@ export default function Members() {
                       <ul className="member-list-clean">
                         {staff.length > 0 ? (
                           staff.map((m) => (
-                            <li key={m._id} className="member-list-item">
-                              <span
-                                className={`status-dot ${m.isAvailable ? "available" : "leave"}`}
-                              ></span>
-                              <span className="member-name-text">
-                                {m.name}{" "}
-                                {m.isAvailable ? "(Available)" : "(On Leave)"}
-                              </span>
+                            <li
+                              key={m._id}
+                              className="member-list-item"
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span
+                                  className={`status-dot ${m.isAvailable ? "available" : "leave"}`}
+                                ></span>
+                                <span className="member-name-text">
+                                  {m.name}{" "}
+                                  {m.isAvailable ? "(Available)" : "(On Leave)"}
+                                </span>
+                              </div>
+
+                              {/* Admin හෝ HR ට පමණක් Delete button එක පෙන්වීම */}
+                              {(userRole === "Admin" || userRole === "HR") && (
+                                <button
+                                  onClick={() =>
+                                    handleDeleteMember(m._id, m.name)
+                                  }
+                                  style={{
+                                    background: "#ef4444",
+                                    color: "white",
+                                    border: "none",
+                                    padding: "4px 8px",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    fontSize: "12px",
+                                    marginLeft: "10px",
+                                  }}
+                                >
+                                  🗑️ Delete
+                                </button>
+                              )}
                             </li>
                           ))
                         ) : (
