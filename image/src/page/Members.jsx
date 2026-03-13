@@ -8,12 +8,16 @@ export default function Members() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const [showReturnModal, setShowReturnModal] = useState(false);
-
   // --- Modal States ---
-  const [showMemberModal, setShowMemberModal] = useState(false); // New Member Modal
-  const [showLeaveModal, setShowLeaveModal] = useState(false); // Leave Modal
+  const [showMemberModal, setShowMemberModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // --- Delete Modal States ---
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [memberToDelete, setMemberToDelete] = useState(null);
+
   const userRole = localStorage.getItem("userRole");
 
   const [newMember, setNewMember] = useState({
@@ -34,7 +38,6 @@ export default function Members() {
     "Sound",
     "Stage",
     "Truss",
-
     "Office",
     "Driver",
     "Cleaning",
@@ -42,13 +45,13 @@ export default function Members() {
   const techCategories = ["LED", "Light", "Sound", "Stage", "Truss"];
   const techPositions = ["Operator", "Labor", "Other"];
   const officePositions = ["Admin", "HR", "Marketing", "Supervisor", "Normal"];
+
   const categoryIcons = {
     LED: "🖥️",
     Light: "💡",
     Sound: "🔊",
     Stage: "🏗️",
     Truss: "🛠️",
-    Supervisor: "👨‍💼",
     Office: "🏢",
     Driver: "🚛",
     Cleaning: "🧹",
@@ -59,7 +62,6 @@ export default function Members() {
     Sound: "#10b981",
     Stage: "#ef4444",
     Truss: "#8b5cf6",
-    Supervisor: "#6b7280",
     Office: "#3b82f6",
     Driver: "#14b8a6",
     Cleaning: "#ec4899",
@@ -83,18 +85,43 @@ export default function Members() {
     fetchMembers();
   }, []);
 
-  // 1. ADD NEW MEMBER FUNCTION
-  // 1. ADD NEW MEMBER FUNCTION (නිවැරදි කළ කේතය)
+  // 1. DELETE LOGIC (Confirmation Modal එකෙන් පසු)
+  const confirmDeleteMember = async () => {
+    if (!memberToDelete) return;
+    try {
+      const response = await fetch(
+        `https://imagine-entertaintment.onrender.com/api/members/${memberToDelete.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
+      );
+
+      if (response.ok) {
+        setShowDeleteModal(false);
+        setShowSuccessModal(true);
+        fetchMembers();
+        setSelectedCategory(null);
+      } else {
+        alert("Failed to delete member.");
+      }
+    } catch (err) {
+      alert("Error deleting member");
+    }
+  };
+
+  const triggerDeleteModal = (id, name) => {
+    setMemberToDelete({ id, name });
+    setShowDeleteModal(true);
+  };
+
+  // 2. ADD MEMBER LOGIC
   const handleAddMember = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-
-    // Driver හෝ Cleaning නම් position එක "Normal" ලෙස ස්වයංක්‍රීයව සැකසීම
     let memberData = { ...newMember, isAvailable: true };
-
-    if (newMember.category === "Driver" || newMember.category === "Cleaning") {
+    if (newMember.category === "Driver" || newMember.category === "Cleaning")
       memberData.position = "Normal";
-    }
 
     try {
       const response = await fetch(
@@ -108,24 +135,18 @@ export default function Members() {
           body: JSON.stringify(memberData),
         },
       );
-
-      const data = await response.json();
-
       if (response.ok) {
         setShowMemberModal(false);
         setShowSuccessModal(true);
         setNewMember({ name: "", nic: "", category: "", position: "" });
         fetchMembers();
-      } else {
-        // වැරැද්ද කුමක්දැයි දැන ගැනීමට alert එකක් දාමු
-        alert(`Error: ${data.message || "Failed to add member"}`);
       }
     } catch (err) {
-      alert("Error adding member: " + err.message);
+      alert("Error adding member");
     }
   };
 
-  // 2. LEAVE UPDATE FUNCTION
+  // 3. LEAVE & RETURN LOGIC
   const handleLeaveUpdate = async (e) => {
     e.preventDefault();
     try {
@@ -137,7 +158,6 @@ export default function Members() {
           body: JSON.stringify({ isAvailable: false }),
         },
       );
-
       if (response.ok) {
         setShowLeaveModal(false);
         setShowSuccessModal(true);
@@ -149,39 +169,6 @@ export default function Members() {
     }
   };
 
-  const handleDeleteMember = async (memberId, name) => {
-    // ඉවත් කිරීමට පෙර තහවුරු කරගැනීම (Confirmation)
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${name}?`,
-    );
-    if (!confirmDelete) return;
-
-    try {
-      const response = await fetch(
-        `https://imagine-entertaintment.onrender.com/api/members/${memberId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
-
-      if (response.ok) {
-        alert("Member removed successfully.");
-        // ලැයිස්තුව නැවත refresh කරන්න
-        fetchMembers();
-        // Modal එක වසා දැමීමට හෝ update කිරීමට
-        setSelectedCategory(null);
-      } else {
-        alert("Failed to delete member.");
-      }
-    } catch (err) {
-      alert("Error deleting member: " + err.message);
-    }
-  };
-
-  // 3. RETURN FROM LEAVE FUNCTION
   const handleReturnUpdate = async (e) => {
     e.preventDefault();
     try {
@@ -190,10 +177,9 @@ export default function Members() {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ isAvailable: true }), // මෙහිදී true ලෙස යවයි
+          body: JSON.stringify({ isAvailable: true }),
         },
       );
-
       if (response.ok) {
         setShowReturnModal(false);
         setShowSuccessModal(true);
@@ -216,14 +202,12 @@ export default function Members() {
 
   const getTeamDetails = (cat) => {
     const catMembers = members.filter((m) => m.category === cat);
-    if (cat === "Office") {
+    if (cat === "Office")
       return {
         Staffs: catMembers.filter((m) => m.position !== "Supervisor"),
         Supervisors: catMembers.filter((m) => m.position === "Supervisor"),
       };
-    }
-    const normalCategories = ["Driver", "Cleaning"];
-    if (normalCategories.includes(cat)) return { allMembers: catMembers };
+    if (["Driver", "Cleaning"].includes(cat)) return { allMembers: catMembers };
     return {
       operators: catMembers.filter((m) => m.position === "Operator"),
       labors: catMembers.filter((m) => m.position === "Labor"),
@@ -238,8 +222,9 @@ export default function Members() {
       <Navbar />
       <main className="members-container">
         <h1 className="members-title">Team Availability</h1>
+
         <div className="members-header-container">
-          {(userRole == "Admin" || userRole == "HR") && (
+          {(userRole === "Admin" || userRole === "HR") && (
             <div className="header-button-group">
               <button
                 className="leave-update-main-btn"
@@ -253,7 +238,6 @@ export default function Members() {
               >
                 ✅ Back to Work
               </button>
-
               <button
                 className="admin-style-add-btn"
                 onClick={() => setShowMemberModal(true)}
@@ -264,7 +248,6 @@ export default function Members() {
           )}
         </div>
 
-        {/* Stats Grid */}
         <div className="stats-grid">
           {categories.map((cat) => {
             const stats = getStatsForCategory(cat);
@@ -305,6 +288,7 @@ export default function Members() {
           })}
         </div>
 
+        {/* TEAM DETAILS MODAL (Scrollable) */}
         {selectedCategory && (
           <div
             className="modal-overlay"
@@ -320,7 +304,10 @@ export default function Members() {
                   &times;
                 </button>
               </div>
-              <div className="modal-body-vertical">
+              <div
+                className="modal-body-vertical"
+                style={{ maxHeight: "400px", overflowY: "auto" }}
+              >
                 {Object.entries(getTeamDetails(selectedCategory)).map(
                   ([role, staff]) => (
                     <div className="role-group" key={role}>
@@ -330,15 +317,7 @@ export default function Members() {
                       <ul className="member-list-clean">
                         {staff.length > 0 ? (
                           staff.map((m) => (
-                            <li
-                              key={m._id}
-                              className="member-list-item"
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                              }}
-                            >
+                            <li key={m._id} className="member-list-item">
                               <div
                                 style={{
                                   display: "flex",
@@ -349,17 +328,14 @@ export default function Members() {
                                   className={`status-dot ${m.isAvailable ? "available" : "leave"}`}
                                 ></span>
                                 <span className="member-name-text">
-                                  {m.name}{" "}
-                                  {m.isAvailable ? "(Available)" : "(On Leave)"}
+                                  {m.name}
                                 </span>
                               </div>
-
-                              {/* Admin හෝ HR ට පමණක් Delete button එක පෙන්වීම */}
                               {(userRole === "Admin" || userRole === "HR") && (
                                 <button
                                   className="delete-member-btn"
                                   onClick={() =>
-                                    handleDeleteMember(m._id, m.name)
+                                    triggerDeleteModal(m._id, m.name)
                                   }
                                 >
                                   🗑️ Delete
@@ -385,7 +361,65 @@ export default function Members() {
           </div>
         )}
 
-        {/* --- 2. ADD NEW MEMBER MODAL (Admin Dashboard එකේ වගේම) --- */}
+        {/* DELETE CONFIRMATION POPUP */}
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="admin-modal delete-modal-box">
+              <div
+                className="error-icon"
+                style={{ fontSize: "50px", color: "#ef4444" }}
+              >
+                ⚠️
+              </div>
+              <h2>Are you sure?</h2>
+              <p>
+                Do you really want to delete <b>{memberToDelete?.name}</b>?
+              </p>
+              <div
+                className="modal-actions"
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                }}
+              >
+                <button
+                  className="confirm-delete-btn"
+                  onClick={confirmDeleteMember}
+                >
+                  Yes, Delete
+                </button>
+                <button
+                  className="cancel-btn"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SUCCESS POPUP */}
+        {showSuccessModal && (
+          <div className="success-overlay">
+            <div className="success-modal">
+              <div className="success-checkmark">
+                <div className="check-icon"></div>
+              </div>
+              <h2>Success!</h2>
+              <button
+                className="success-btn"
+                onClick={() => setShowSuccessModal(false)}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ADD MEMBER & LEAVE MODALS */}
         {showMemberModal && (
           <div className="modal-overlay">
             <div className="admin-modal">
@@ -461,25 +495,6 @@ export default function Members() {
                     </select>
                   </div>
                 )}
-                {newMember.category === "Office" && (
-                  <div className="form-group">
-                    <label>Office Position</label>
-                    <select
-                      required
-                      value={newMember.position}
-                      onChange={(e) =>
-                        setNewMember({ ...newMember, position: e.target.value })
-                      }
-                    >
-                      <option value="">Select Position</option>
-                      {officePositions.map((pos) => (
-                        <option key={pos} value={pos}>
-                          {pos}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
                 <button type="submit" className="save-btn">
                   Save Member
                 </button>
@@ -488,7 +503,6 @@ export default function Members() {
           </div>
         )}
 
-        {/* --- 3. LEAVE UPDATE MODAL --- */}
         {showLeaveModal && (
           <div className="modal-overlay">
             <div className="admin-modal leave-modal">
@@ -502,12 +516,10 @@ export default function Members() {
                 </button>
               </div>
               <form onSubmit={handleLeaveUpdate}>
-                {/* 1. Category Selection */}
                 <div className="form-group">
-                  <label>Select Category</label>
+                  <label>Category</label>
                   <select
                     required
-                    value={leaveData.category}
                     onChange={(e) =>
                       setLeaveData({
                         ...leaveData,
@@ -517,7 +529,7 @@ export default function Members() {
                       })
                     }
                   >
-                    <option value="">-- Choose Category --</option>
+                    <option value="">-- Select --</option>
                     {categories.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
@@ -525,57 +537,8 @@ export default function Members() {
                     ))}
                   </select>
                 </div>
-
-                {/* 2. Position Selection (For Tech Categories) */}
-                {techCategories.includes(leaveData.category) && (
-                  <div className="form-group">
-                    <label>Select Position</label>
-                    <select
-                      required
-                      value={leaveData.position}
-                      onChange={(e) =>
-                        setLeaveData({
-                          ...leaveData,
-                          position: e.target.value,
-                          memberId: "",
-                        })
-                      }
-                    >
-                      <option value="">-- Choose Position --</option>
-                      {techPositions.map((pos) => (
-                        <option key={pos} value={pos}>
-                          {pos}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {/* 3. Position Selection (NEW: Specifically for Office Category) */}
-                {leaveData.category === "Office" && (
-                  <div className="form-group">
-                    <label>Select Staff Type</label>
-                    <select
-                      required
-                      value={leaveData.position}
-                      onChange={(e) =>
-                        setLeaveData({
-                          ...leaveData,
-                          position: e.target.value,
-                          memberId: "",
-                        })
-                      }
-                    >
-                      <option value="">-- Choose Type --</option>
-                      <option value="Supervisor">Supervisor</option>
-                      <option value="Staff">Staff (Normal/Admin/HR)</option>
-                    </select>
-                  </div>
-                )}
-
-                {/* 4. Member Name Selection */}
                 <div className="form-group">
-                  <label>Select Member Name</label>
+                  <label>Member Name</label>
                   <select
                     required
                     value={leaveData.memberId}
@@ -583,32 +546,12 @@ export default function Members() {
                       setLeaveData({ ...leaveData, memberId: e.target.value })
                     }
                   >
-                    <option value="">-- Choose Member --</option>
+                    <option value="">-- Select Member --</option>
                     {members
-                      .filter((m) => {
-                        const isSameCategory =
-                          m.category === leaveData.category;
-                        const isAvailable = m.isAvailable;
-
-                        let matchesPosition = true;
-                        if (leaveData.category === "Office") {
-                          // Office සඳහා Supervisor ද නැද්ද යන්න පරීක්ෂා කරයි
-                          matchesPosition =
-                            leaveData.position === "Supervisor"
-                              ? m.position === "Supervisor"
-                              : m.position !== "Supervisor";
-                        } else if (
-                          techCategories.includes(leaveData.category)
-                        ) {
-                          matchesPosition = m.position === leaveData.position;
-                        }
-
-                        return (
-                          isSameCategory &&
-                          isAvailable &&
-                          (leaveData.position ? matchesPosition : true)
-                        );
-                      })
+                      .filter(
+                        (m) =>
+                          m.category === leaveData.category && m.isAvailable,
+                      )
                       .map((m) => (
                         <option key={m._id} value={m._id}>
                           {m.name}
@@ -616,7 +559,6 @@ export default function Members() {
                       ))}
                   </select>
                 </div>
-
                 <button type="submit" className="save-btn leave-btn">
                   Update to On Leave
                 </button>
@@ -625,88 +567,69 @@ export default function Members() {
           </div>
         )}
 
-        {/* --- 4. SUCCESS POPUP --- */}
-        {showSuccessModal && (
-          <div className="success-overlay">
-            <div className="success-modal">
-              <div className="success-checkmark">
-                <div className="check-icon"></div>
+        {showReturnModal && (
+          <div className="modal-overlay">
+            <div className="admin-modal return-modal">
+              <div className="modal-header">
+                <h2>Return from Leave</h2>
+                <button
+                  className="close-x"
+                  onClick={() => setShowReturnModal(false)}
+                >
+                  &times;
+                </button>
               </div>
-              <h2>Successfully Updated!</h2>
-              <p>Action completed successfully.</p>
-              <button
-                className="success-btn"
-                onClick={() => setShowSuccessModal(false)}
-              >
-                OK
-              </button>
+              <form onSubmit={handleReturnUpdate}>
+                <div className="form-group">
+                  <label>Category</label>
+                  <select
+                    required
+                    onChange={(e) =>
+                      setLeaveData({
+                        ...leaveData,
+                        category: e.target.value,
+                        memberId: "",
+                      })
+                    }
+                  >
+                    <option value="">-- Select --</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Member Name</label>
+                  <select
+                    required
+                    value={leaveData.memberId}
+                    onChange={(e) =>
+                      setLeaveData({ ...leaveData, memberId: e.target.value })
+                    }
+                  >
+                    <option value="">-- Select Member --</option>
+                    {members
+                      .filter(
+                        (m) =>
+                          m.category === leaveData.category && !m.isAvailable,
+                      )
+                      .map((m) => (
+                        <option key={m._id} value={m._id}>
+                          {m.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <button type="submit" className="save-btn return-btn">
+                  Mark as Available
+                </button>
+              </form>
             </div>
           </div>
         )}
       </main>
-      {showReturnModal && (
-        <div className="modal-overlay">
-          <div className="admin-modal return-modal">
-            <div className="modal-header">
-              <h2>Return from Leave</h2>
-              <button
-                className="close-x"
-                onClick={() => setShowReturnModal(false)}
-              >
-                &times;
-              </button>
-            </div>
-            <form onSubmit={handleReturnUpdate}>
-              <div className="form-group">
-                <label>Select Category</label>
-                <select
-                  required
-                  onChange={(e) =>
-                    setLeaveData({
-                      ...leaveData,
-                      category: e.target.value,
-                      memberId: "",
-                    })
-                  }
-                >
-                  <option value="">-- Choose Category --</option>
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Select Staff Member (On Leave Only)</label>
-                <select
-                  required
-                  value={leaveData.memberId}
-                  onChange={(e) =>
-                    setLeaveData({ ...leaveData, memberId: e.target.value })
-                  }
-                >
-                  <option value="">-- Choose Member --</option>
-                  {members
-                    .filter(
-                      (m) =>
-                        m.category === leaveData.category && !m.isAvailable,
-                    ) // මෙහිදී පෙන්වන්නේ නිවාඩු ගිය අය පමණි
-                    .map((m) => (
-                      <option key={m._id} value={m._id}>
-                        {m.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <button type="submit" className="save-btn return-btn">
-                Mark as Available
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
       <Footer />
     </div>
   );

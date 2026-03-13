@@ -731,3 +731,55 @@
   padding: 10px 15px;
   border-bottom: 1px solid #f1f5f9;
 }
+/* Delete Button Styling */
+.delete-member-btn {
+  width: 85px !important;
+  height: 32px !important;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.delete-member-btn:hover {
+  background-color: #b91c1c;
+}
+
+/* Delete Modal Specifics */
+.delete-modal-box {
+  text-align: center;
+  padding: 30px !important;
+  max-width: 400px !important;
+}
+
+.confirm-delete-btn {
+  background: #ef4444;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #6b7280;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.member-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+}
