@@ -14,6 +14,14 @@ const AddItem = () => {
   const barcodeInputRef = useRef(null);
   const [allEvents, setAllEvents] = useState([]);
 
+  const tableEndRef = useRef(null);
+
+  useEffect(() => {
+    if (tableEndRef.current) {
+      tableEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [scannedItems]);
+
   const [barcode, setBarcode] = useState("");
   const [scannedItems, setScannedItems] = useState([]);
   const [eventStatus, setEventStatus] = useState("");
@@ -263,14 +271,12 @@ const AddItem = () => {
                   scannedItems.map((item, index) => (
                     <tr key={item.barcodeID}>
                       <td>
-                        {index + 1}.{item.itemName}
+                        {index + 1}. {item.itemName}
                       </td>
                       <td>
                         <button
                           className="delete-btn"
-                          disabled={isOngoing}
                           onClick={() => triggerDeleteModal(item)}
-                          style={{ opacity: isOngoing ? 0.5 : 1 }}
                         >
                           Remove
                         </button>
@@ -279,9 +285,11 @@ const AddItem = () => {
                   ))
                 ) : (
                   <tr className="empty-row">
-                    <td colSpan="3">No items scanned yet.</td>
+                    <td colSpan="2">No items scanned yet.</td>
                   </tr>
                 )}
+                {/* පහළට scroll වීමට උදව් වන හිස් div එක */}
+                <div ref={tableEndRef} />
               </tbody>
             </table>
           </div>
