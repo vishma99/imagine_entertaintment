@@ -357,19 +357,10 @@ export default function Members() {
                               {/* Admin හෝ HR ට පමණක් Delete button එක පෙන්වීම */}
                               {(userRole === "Admin" || userRole === "HR") && (
                                 <button
+                                  className="delete-member-btn"
                                   onClick={() =>
                                     handleDeleteMember(m._id, m.name)
                                   }
-                                  style={{
-                                    background: "#ef4444",
-                                    color: "white",
-                                    border: "none",
-                                    padding: "4px 8px",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                    fontSize: "12px",
-                                    marginLeft: "10px",
-                                  }}
                                 >
                                   🗑️ Delete
                                 </button>

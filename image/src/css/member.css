@@ -700,3 +700,34 @@
   background-color: #b91c1c !important;
   transform: scale(1.05);
 }
+.delete-member-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  width: 85px; /* බටන් එකේ පළල */
+  height: 30px; /* බටන් එකේ උස */
+  cursor: pointer;
+  font-weight: 500;
+}
+/* Delete Button එක සමාන ප්‍රමාණයකට සැකසීම */
+.member-list-item button {
+  width: 90px; /* සියලුම බටන් වල පළල එකම ගාණකට සකසයි */
+  height: 32px; /* උස සමාන කරයි */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px; /* Icon එක සහ අකුරු අතර පරතරය */
+  padding: 0; /* ඇතුළත padding එක ඉවත් කර width එකෙන් පාලනය කරයි */
+  font-size: 13px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+/* Modal එක ඇතුළේ ලිස්ට් එකේ පේළිය හරිගැස්වීම */
+.member-list-item {
+  display: flex;
+  justify-content: space-between; /* නම වමටත්, බටන් එක දකුණටත් තල්ලු කරයි */
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #f1f5f9;
+}
