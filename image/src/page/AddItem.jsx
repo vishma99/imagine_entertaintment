@@ -12,6 +12,7 @@ const AddItem = () => {
   const { eventId, category } = useParams();
   const navigate = useNavigate();
   const barcodeInputRef = useRef(null);
+  const [allEvents, setAllEvents] = useState([]);
 
   const [barcode, setBarcode] = useState("");
   const [scannedItems, setScannedItems] = useState([]);
@@ -101,6 +102,7 @@ const AddItem = () => {
     if (!barcode.trim()) return;
 
     try {
+      // A. බාර්කෝඩ් එකට අදාළ Item එක Database එකෙන් සෙවීම
       const response = await fetch(
         `https://imagine-entertaintment.onrender.com/api/items/${barcode.trim()}`,
       );
@@ -115,41 +117,41 @@ const AddItem = () => {
       const item = await response.json();
 
       if (response.ok) {
-        // 1. දැනටමත් ස්කෑන් කර ඇත්දැයි බැලීම (සියලුම කැටගරි වල)
-        // සටහන: ඔබට මුළු Event එකේම equipmentList එක මෙහිදී පරීක්ෂා කළ හැක
-        const alreadyScanned = scannedItems.find(
-          (i) => i.barcodeID === item.barcodeID,
-        );
-        if (alreadyScanned) {
+        // B. පරීක්ෂාව 1: දැනටමත් මේ ඉවෙන්ට් එකේම මේ අයිතමය තිබේද?
+        if (scannedItems.find((i) => i.barcodeID === item.barcodeID)) {
           playSound("error");
-          setErrorMessage(`Item already scanned: ${item.itemName}`);
+          setErrorMessage(
+            `Item already scanned in THIS event: ${item.itemName}`,
+          );
           setShowErrorModal(true);
           setBarcode("");
           return;
         }
 
-        // 2. භාණ්ඩය කුමන කැටගරියක වුවත් එය පිළිගැනීම
-        playSound("success");
-
-        // පිටුවේ පෙන්වන ලැයිස්තුවට එක් කිරීම (Optional: මෙය පසුව Category එක අනුව Filter වේ)
-        const newItemsList = [...scannedItems, item];
-        setScannedItems(newItemsList);
-
-        // 3. DATABASE එකට AUTO-SAVE කිරීම
-        // මෙහිදී වැදගත් වන්නේ භාණ්ඩයේම කැටගරිය (item.category) භාවිතා කිරීමයි
-        await fetch(
-          `https://imagine-entertaintment.onrender.com/api/events/${eventId}/save-equipment`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              items: [item], // අලුත් භාණ්ඩය පමණක් යැවීම හෝ සම්පූර්ණ ලැයිස්තුව
-              category: item.category, // පිටුවේ කැටගරිය නොව භාණ්ඩයේම කැටගරිය මෙහි යවන්න
-            }),
-          },
+        // C. පරීක්ෂාව 2: වෙනත් ඕනෑම ACTIVE ඉවෙන්ට් එකක මේ භාණ්ඩය තිබේද? (ප්‍රධාන පරීක්ෂාව)
+        const busyEvent = allEvents.find(
+          (ev) =>
+            ev._id !== eventId && // දැනට අපි ඉන්න event එක නෙවෙයි වෙන්න ඕනේ
+            ev.status !== "Completed" && // ඉවර වුණු event වල තිබුණාට ප්‍රශ්නයක් නැහැ
+            ev.equipmentList?.some((eq) => eq.barcodeID === item.barcodeID),
         );
 
+        if (busyEvent) {
+          playSound("error");
+          setErrorMessage(
+            `This item (${item.itemName}) is currently busy in another event: "${busyEvent.eventName}". Please return it first!`,
+          );
+          setShowErrorModal(true);
+          setBarcode("");
+          return;
+        }
+
+        // සියල්ල හරි නම් පමණක් ඉදිරියට...
+        playSound("success");
+        const newItemsList = [...scannedItems, item];
+        setScannedItems(newItemsList);
         setBarcode("");
+        await autoSaveToDatabase(newItemsList);
       }
     } catch (err) {
       setErrorMessage("Server error. Please check your connection.");
@@ -193,7 +195,20 @@ const AddItem = () => {
   };
 
   const isOngoing = eventStatus === "Ongoing";
-
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const res = await fetch(
+          "https://imagine-entertaintment.onrender.com/api/events",
+        );
+        const data = await res.json();
+        setAllEvents(data);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      }
+    };
+    fetchAllData();
+  }, []);
   return (
     <>
       <EventNavbar />
