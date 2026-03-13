@@ -32,11 +32,11 @@ const EventCreate = () => {
       truss: false,
     },
     operators: {
-      led: { Operator: [], Labors: [], Other: [] },
-      light: { Operator: [], Labors: [], Other: [] },
-      sound: { Operator: [], Labors: [], Other: [] },
-      stage: { Operator: [], Labors: [], Other: [] },
-      truss: { Operator: [], Labors: [], Other: [] },
+      led: { Supervisor: [], Operator: [], Labors: [], Other: [] },
+      light: { Supervisor: [], Operator: [], Labors: [], Other: [] },
+      sound: { Supervisor: [], Operator: [], Labors: [], Other: [] },
+      stage: { Supervisor: [], Operator: [], Labors: [], Other: [] },
+      truss: { Supervisor: [], Operator: [], Labors: [], Other: [] },
     },
     setupDate: "",
     setupTime: "",
@@ -141,16 +141,25 @@ const EventCreate = () => {
       Operator: "Operator",
       Labors: "Labor",
       Other: "Other",
+      Supervisor: "Supervisor", // Supervisor භූමිකාව එක් කළා
     };
     const dbRole = roleMap[role] || role;
 
-    const filtered = dbMembers.filter(
-      (m) =>
+    const filtered = dbMembers.filter((m) => {
+      // නීතිය 1: එම Category එකේම අදාළ Role එක ඇති අය (උදා: LED Operator)
+      const isMainCatMember =
         m.category.toUpperCase() === currentCat.toUpperCase() &&
-        m.position === dbRole,
-    );
+        m.position === dbRole;
 
-    // Sort Logic: Available සහ On-Event අයව ඉහළින් තබා On Leave අයව පහළට දමයි
+      // නීතිය 2: Office Category එකේ සිටින අය (ඕනෑම තාක්ෂණික කාණ්ඩයකට මොවුන්ව දැමිය හැක)
+      const isOfficeMember =
+        m.category === "Office" &&
+        ((role === "Supervisor" && m.position === "Supervisor") || // Office Supervisor
+          (role === "Operator" && m.position !== "Supervisor")); // Office Staff සාමාන්‍ය Operator ලෙස ගත හැක
+
+      return isMainCatMember || isOfficeMember;
+    });
+
     return filtered.sort((a, b) => {
       const aStatus = a.isAvailable || a.isOnEvent ? 1 : 0;
       const bStatus = b.isAvailable || b.isOnEvent ? 1 : 0;
@@ -272,20 +281,27 @@ const EventCreate = () => {
         <div className="op-modal-overlay">
           <div className="op-modal large-modal">
             <h3>Assign Team for {currentCat.toUpperCase()}</h3>
-            {["Operator", "Labors", "Other"].map((role, idx) => (
+
+            {/* පවතින ලැයිස්තුවට "Supervisor" අලුතින් එක් කළා */}
+            {["Supervisor", "Operator", "Labors", "Other"].map((role, idx) => (
               <div className="role-selection-row" key={role}>
                 <label>
-                  {idx + 1}. {role}s:
+                  {idx + 1}. {role === "Labors" ? "Labors" : role}:
                 </label>
                 <button
                   type="button"
                   className="role-pop-btn"
                   onClick={() => setActiveRolePopup(role)}
+                  style={{
+                    backgroundColor:
+                      role === "Supervisor" ? "#e67e22" : "#1e40af",
+                  }}
                 >
                   {formData.operators[currentCat][role]?.length || 0} Selected +
                 </button>
               </div>
             ))}
+
             <button
               className="op-done-btn"
               onClick={() => setShowOpModal(false)}
