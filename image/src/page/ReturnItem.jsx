@@ -7,11 +7,11 @@ const ReturnItem = () => {
   const { eventId, category } = useParams();
   const navigate = useNavigate();
   const barcodeInputRef = useRef(null);
-  const tableEndRef = useRef(null); // Scroll වීම සඳහා
+  const tableEndRef = useRef(null);
 
   const [barcode, setBarcode] = useState("");
   const [scannedItems, setScannedItems] = useState([]);
-  const [allEventItems, setAllEventItems] = useState([]); // මුළු Event එකේම බඩු තබා ගැනීමට
+  const [allEventItems, setAllEventItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -25,7 +25,6 @@ const ReturnItem = () => {
     audio.play().catch((e) => console.log("Audio play error"));
   };
 
-  // --- 1. සියලුම බඩු ලැයිස්තුව ගෙන්වා ගැනීම ---
   const fetchItems = async () => {
     try {
       setLoading(true);
@@ -35,15 +34,15 @@ const ReturnItem = () => {
       const data = await response.json();
 
       if (data && data.equipmentList) {
-        setAllEventItems(data.equipmentList); // සියලුම බඩු පසුව පාවිච්චියට තබා ගනී
+        setAllEventItems(data.equipmentList);
 
-        // දැනට තෝරාගෙන ඇති Category එකට අදාළ, Return නොකළ බඩු පමණක් Table එකේ පෙන්වයි
         const targetCategory = category ? category.toLowerCase().trim() : "";
         const filtered = data.equipmentList.filter((item) => {
           const itemCat = item.category
             ? item.category.toLowerCase().trim()
             : "";
-          return itemCat === targetCategory && !item.isMissing; // මෙතන isMissing check එක අවශ්‍ය පරිදි යොදන්න
+          // Return නොවූ සහ Missing නොවුණු අයිතම පමණක් පෙන්වයි
+          return itemCat === targetCategory && !item.isMissing;
         });
         setScannedItems(filtered);
       }
@@ -59,7 +58,6 @@ const ReturnItem = () => {
     if (eventId) fetchItems();
   }, [eventId, category]);
 
-  // අලුත් item එකක් scan කළ විට හෝ ඉවත් කළ විට පහළට scroll කිරීම
   useEffect(() => {
     tableEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [scannedItems]);
@@ -69,14 +67,13 @@ const ReturnItem = () => {
     setTimeout(() => barcodeInputRef.current?.focus(), 10);
   };
 
-  // --- 2. CROSS-CATEGORY RETURN LOGIC ---
   const handleReturnSubmit = async (e) => {
     e.preventDefault();
     const trimmedBarcode = barcode.trim();
     if (!trimmedBarcode) return;
 
     try {
-      // 1. මුලින්ම බාර්කෝඩ් එක පද්ධතියේ (Items Database) තියෙනවාදැයි බලමු
+      // 1. පද්ධතියේ (Database) අයිතමය තිබේදැයි බැලීම
       const itemCheckResponse = await fetch(
         `https://imagine-entertaintment.onrender.com/api/items/${trimmedBarcode}`,
       );
@@ -91,7 +88,7 @@ const ReturnItem = () => {
 
       const itemData = await itemCheckResponse.json();
 
-      // 2. දැන් බලමු මේ අයිතමය මේ ඉවෙන්ට් එකට (allEventItems) අදාළ එකක්ද කියලා
+      // 2. අයිතමය මේ Event එකට අදාළදැයි බැලීම
       const itemInEvent = allEventItems.find(
         (item) => item.barcodeID === trimmedBarcode,
       );
@@ -106,7 +103,7 @@ const ReturnItem = () => {
         return;
       }
 
-      // 3. සියල්ල හරි නම් Return එක සිදු කරමු
+      // 3. Return කිරීම
       const response = await fetch(
         `https://imagine-entertaintment.onrender.com/api/events/${eventId}/return-item-get?barcodeID=${trimmedBarcode}&category=${itemInEvent.category}`,
       );
@@ -128,7 +125,7 @@ const ReturnItem = () => {
       }
     } catch (err) {
       playSound("error");
-      setErrorMessage("Server connection failed. Please try again.");
+      setErrorMessage("Server connection failed.");
       setShowErrorModal(true);
     }
   };
@@ -184,7 +181,6 @@ const ReturnItem = () => {
             </div>
           </form>
 
-          {/* SCROLLABLE CONTAINER */}
           <div className="scanned-table-container">
             <table className="scanned-table">
               <thead>
@@ -218,7 +214,7 @@ const ReturnItem = () => {
                     </td>
                   </tr>
                 )}
-                <div ref={tableEndRef} /> {/* Auto-scroll target */}
+                <div ref={tableEndRef} />
               </tbody>
             </table>
           </div>
@@ -231,8 +227,47 @@ const ReturnItem = () => {
         </div>
       </main>
 
-      {/* Success and Error Modals පවතින පරිදිම තබා ගන්න... */}
-      {/* (Success Modal සහ Error Modal කේතය ඔබ කලින් එවූ පරිදිම මෙතනට එයි) */}
+      {/* --- SUCCESS MODAL --- */}
+      {showSuccessModal && (
+        <div className="success-overlay">
+          <div className="success-modal">
+            <div className="success-checkmark">
+              <div className="check-icon"></div>
+            </div>
+            <h2>Process Completed</h2>
+            {scannedItems.length > 0 && (
+              <p style={{ color: "#dc2626", fontWeight: "bold" }}>
+                Warning: {scannedItems.length} items missing!
+              </p>
+            )}
+            <button
+              className="success-btn"
+              onClick={() => navigate("/pendingEvent")}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* --- ERROR MODAL (Pop-up එක) --- */}
+      {showErrorModal && (
+        <div className="modal-overlay" style={{ zIndex: 2000 }}>
+          <div className="error-modal-box">
+            <div
+              className="error-icon"
+              style={{ fontSize: "40px", marginBottom: "10px" }}
+            >
+              ⚠️
+            </div>
+            <h2>Attention!</h2>
+            <p style={{ margin: "15px 0" }}>{errorMessage}</p>
+            <button className="close-btn" onClick={handleErrorModalClose}>
+              Understood
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
