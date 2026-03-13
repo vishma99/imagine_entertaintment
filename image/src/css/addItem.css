@@ -382,3 +382,40 @@
   max-width: 450px;
   padding: 25px;
 }
+/* Table එක ඇති Container එක Scrollable කිරීම */
+.scanned-table-container {
+  max-height: 450px; /* භාණ්ඩ 8-9කට ගැලපෙන උස (මෙය අවශ්‍ය පරිදි වෙනස් කරන්න) */
+  overflow-y: auto; /* ඉහළට/පහළට scroll කළ හැකි කරයි */
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-top: 20px;
+  background-color: #fff;
+}
+
+/* Table එකේ Header එක Scroll කරන විට උඩම රැඳී තිබීමට (Sticky Header) */
+.scanned-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8fafc; /* Header එකේ පසුබිම් වර්ණය */
+  z-index: 10;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Scrollbar එක ලස්සනට පෙන්වීමට (Chrome/Edge/Safari සඳහා) */
+.scanned-table-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scanned-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scanned-table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.scanned-table-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
