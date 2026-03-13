@@ -14,14 +14,6 @@ const AddItem = () => {
   const barcodeInputRef = useRef(null);
   const [allEvents, setAllEvents] = useState([]);
 
-  const tableEndRef = useRef(null);
-
-  useEffect(() => {
-    if (tableEndRef.current) {
-      tableEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [scannedItems]);
-
   const [barcode, setBarcode] = useState("");
   const [scannedItems, setScannedItems] = useState([]);
   const [eventStatus, setEventStatus] = useState("");
