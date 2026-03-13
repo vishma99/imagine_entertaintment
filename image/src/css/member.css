@@ -658,3 +658,31 @@
   text-align: left;
   box-sizing: border-box !important;
 }
+/* Back to Work Button Style */
+.return-update-main-btn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.return-update-main-btn:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+.return-btn {
+  background-color: #2ecc71 !important;
+}
+
+/* Header group එක mobile එකේදී පිළිවෙලට තැබීමට */
+.header-button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

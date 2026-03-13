@@ -8,6 +8,8 @@ export default function Members() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const [showReturnModal, setShowReturnModal] = useState(false);
+
   // --- Modal States ---
   const [showMemberModal, setShowMemberModal] = useState(false); // New Member Modal
   const [showLeaveModal, setShowLeaveModal] = useState(false); // Leave Modal
@@ -147,6 +149,30 @@ export default function Members() {
     }
   };
 
+  // 3. RETURN FROM LEAVE FUNCTION
+  const handleReturnUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `https://imagine-entertaintment.onrender.com/api/members/update-status/${leaveData.memberId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isAvailable: true }), // මෙහිදී true ලෙස යවයි
+        },
+      );
+
+      if (response.ok) {
+        setShowReturnModal(false);
+        setShowSuccessModal(true);
+        setLeaveData({ category: "", position: "", memberId: "" });
+        fetchMembers();
+      }
+    } catch (err) {
+      alert("Error updating status");
+    }
+  };
+
   const getStatsForCategory = (cat) => {
     const catMembers = members.filter((m) => m.category === cat);
     return {
@@ -188,6 +214,12 @@ export default function Members() {
                 onClick={() => setShowLeaveModal(true)}
               >
                 📅 Leave Update
+              </button>
+              <button
+                className="return-update-main-btn"
+                onClick={() => setShowReturnModal(true)}
+              >
+                ✅ Back to Work
               </button>
 
               <button
@@ -553,6 +585,69 @@ export default function Members() {
           </div>
         )}
       </main>
+      {showReturnModal && (
+        <div className="modal-overlay">
+          <div className="admin-modal return-modal">
+            <div className="modal-header">
+              <h2>Return from Leave</h2>
+              <button
+                className="close-x"
+                onClick={() => setShowReturnModal(false)}
+              >
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleReturnUpdate}>
+              <div className="form-group">
+                <label>Select Category</label>
+                <select
+                  required
+                  onChange={(e) =>
+                    setLeaveData({
+                      ...leaveData,
+                      category: e.target.value,
+                      memberId: "",
+                    })
+                  }
+                >
+                  <option value="">-- Choose Category --</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Select Staff Member (On Leave Only)</label>
+                <select
+                  required
+                  value={leaveData.memberId}
+                  onChange={(e) =>
+                    setLeaveData({ ...leaveData, memberId: e.target.value })
+                  }
+                >
+                  <option value="">-- Choose Member --</option>
+                  {members
+                    .filter(
+                      (m) =>
+                        m.category === leaveData.category && !m.isAvailable,
+                    ) // මෙහිදී පෙන්වන්නේ නිවාඩු ගිය අය පමණි
+                    .map((m) => (
+                      <option key={m._id} value={m._id}>
+                        {m.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <button type="submit" className="save-btn return-btn">
+                Mark as Available
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );
