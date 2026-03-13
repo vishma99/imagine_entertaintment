@@ -8,7 +8,6 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // User පරීක්ෂාව සහ Save කිරීම
     const userExists = await User.findOne({ email });
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
@@ -23,16 +22,26 @@ export const registerUser = async (req, res) => {
       role,
       verificationToken: otp,
       isVerified: false,
-      isAdminApproved: false,
+      isAdminApproved: false, // සැමවිටම false වේ
     });
     await newUser.save();
-
-    // --- නිර්දේශිත ක්‍රමය (Try-Catch) ---
     try {
-      await sendEmail(email, "Verification OTP", `<h1>Your OTP is ${otp}</h1>`);
-      console.log("Email sent successfully via API!");
+      const htmlContent = `
+    <div style="font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; text-align: center; border-radius: 10px;">
+      <h2 style="color: #1e3a8a;">Welcome to Imagine Entertainment</h2>
+      <p>Hi ${name}, please use the following OTP to verify your email address:</p>
+      <h1 style="color: #1a73e8; font-size: 36px; letter-spacing: 5px; background: #f4f4f4; padding: 10px; display: inline-block;">${otp}</h1>
+      <p>This code is valid for 10 minutes. Do not share this with anyone.</p>
+      <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+      <p style="font-size: 12px; color: #888;">&copy; 2026 Imagine Entertainment. All rights reserved.</p>
+    </div>
+  `;
+      await sendEmail(
+        email,
+        "Verification OTP - Imagine Entertainment",
+        htmlContent,
+      );
     } catch (error) {
-      // ඊමේල් එක යැවීමට නොහැකි වුණත් User සේව් වී ඇති නිසා මෙතැනදී Log එකක් පෙන්වමු
       console.error("API Email Error:", error.message);
     }
 
@@ -50,28 +59,35 @@ export const verifyOTP = async (req, res) => {
     if (!user) return res.status(400).json({ message: "Invalid OTP" });
 
     user.isVerified = true;
-    if (user.role === "Admin") {
-      user.isAdminApproved = true;
-      user.verificationToken = undefined;
-      await user.save();
-      return res
-        .status(200)
-        .json({ message: "Admin account verified successfully!" });
-    }
 
+    // මීට පෙර Admin කෙනෙකුට ස්වයංක්‍රීයව ලැබුණු අවසරය මෙහිදී ඉවත් කර ඇත.
+    // දැන් ඕනෑම Role එකක කෙනෙකුට Approve Token එකක් සෑදේ.
     const approveToken = crypto.randomBytes(32).toString("hex");
     user.verificationToken = approveToken;
     await user.save();
 
-    const admins = await User.find({ role: "Admin" });
+    // පද්ධතියේ දැනට සිටින Verified සහ Approved Admin ලා සොයා ගැනීම
+    const admins = await User.find({ role: "Admin", isAdminApproved: true });
+
     if (admins.length > 0) {
       const approveLink = `https://imagine-entertaintment.onrender.com/api/user/approve/${approveToken}`;
+      const adminHtml = `
+    <div style="font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
+      <h2 style="color: #e67e22;">New User Approval Required</h2>
+      <p>A new user has verified their email and is waiting for your approval.</p>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><b>Name:</b> ${user.name}</td></tr>
+        <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><b>Email:</b> ${user.email}</td></tr>
+        <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><b>Role:</b> ${user.role}</td></tr>
+      </table>
+      <div style="text-align: center; margin-top: 25px;">
+        <a href="${approveLink}" style="background-color: #1a73e8; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Approve This User</a>
+      </div>
+    </div>
+  `;
+
       admins.forEach((admin) => {
-        sendEmail(
-          admin.email,
-          "New User Approval Required",
-          `<a href="${approveLink}">Approve User ${user.name}</a>`,
-        );
+        sendEmail(admin.email, "Action Required: New User Approval", adminHtml);
       });
     }
     res

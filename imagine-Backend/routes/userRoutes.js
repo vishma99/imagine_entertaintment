@@ -84,7 +84,42 @@ router.post("/forgot-password", async (req, res) => {
     user.resetOTPExpires = Date.now() + 600000; // විනාඩි 10 කින් අහෝසි වේ
     await user.save();
 
-    await sendEmail(email, "Password Reset OTP", `<h2>Your OTP: ${otp}</h2>`);
+    // ලස්සන HTML Email එක මෙතැන සිට...
+    const htmlContent = `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div style="background-color: #1e3a8a; padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Imagine Entertainment</h1>
+          <p style="color: #bfdbfe; margin-top: 5px; font-size: 14px;">Secure Password Reset</p>
+        </div>
+        <div style="padding: 40px; background-color: #ffffff; text-align: center;">
+          <h2 style="color: #1e293b; margin-bottom: 20px;">Password Reset Request</h2>
+          <p style="color: #475569; font-size: 16px; line-height: 1.6;">
+            Hi <strong>${user.name}</strong>, <br>
+            We received a request to reset your password. Use the code below to complete the process.
+          </p>
+          <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Your OTP Code</p>
+            <h1 style="color: #2563eb; font-size: 42px; margin: 0; letter-spacing: 8px; font-weight: bold;">${otp}</h1>
+          </div>
+          <p style="color: #ef4444; font-size: 14px; font-weight: 500;">
+            This code will expire in 10 minutes.
+          </p>
+          <p style="color: #94a3b8; font-size: 13px; margin-top: 30px;">
+            If you did not request this, please ignore this email or contact support if you have concerns.
+          </p>
+        </div>
+        <div style="background-color: #f1f5f9; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+          <p style="color: #64748b; font-size: 12px; margin: 0;">&copy; 2026 Imagine Entertainment Team. All rights reserved.</p>
+        </div>
+      </div>
+    `;
+
+    await sendEmail(
+      email,
+      "Your Password Reset OTP - Imagine Entertainment",
+      htmlContent,
+    );
+
     res.status(200).json({ message: "OTP sent successfully!" });
   } catch (error) {
     res.status(500).json({ message: error.message });
