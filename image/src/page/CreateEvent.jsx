@@ -141,23 +141,23 @@ const EventCreate = () => {
       Operator: "Operator",
       Labors: "Labor",
       Other: "Other",
-      Supervisor: "Supervisor", // Supervisor භූමිකාව එක් කළා
+      Supervisor: "Supervisor",
     };
     const dbRole = roleMap[role] || role;
 
     const filtered = dbMembers.filter((m) => {
-      // නීතිය 1: එම Category එකේම අදාළ Role එක ඇති අය (උදා: LED Operator)
+      // 1. දැනට තෝරාගෙන ඇති තාක්ෂණික Category එකේ (LED, Light, etc.) අදාළ Role එක ඇති අය
       const isMainCatMember =
         m.category.toUpperCase() === currentCat.toUpperCase() &&
         m.position === dbRole;
 
-      // නීතිය 2: Office Category එකේ සිටින අය (ඕනෑම තාක්ෂණික කාණ්ඩයකට මොවුන්ව දැමිය හැක)
-      const isOfficeMember =
+      // 2. Office Category එකෙන් ගන්නේ Supervisor ලා පමණි (Supervisor කියන Role එක තෝරා ඇති විට පමණක්)
+      const isOfficeSupervisor =
+        role === "Supervisor" &&
         m.category === "Office" &&
-        ((role === "Supervisor" && m.position === "Supervisor") || // Office Supervisor
-          (role === "Operator" && m.position !== "Supervisor")); // Office Staff සාමාන්‍ය Operator ලෙස ගත හැක
+        m.position === "Supervisor";
 
-      return isMainCatMember || isOfficeMember;
+      return isMainCatMember || isOfficeSupervisor;
     });
 
     return filtered.sort((a, b) => {
@@ -166,7 +166,6 @@ const EventCreate = () => {
       return bStatus - aStatus;
     });
   }
-
   return (
     <>
       <EventNavbar />
@@ -286,7 +285,7 @@ const EventCreate = () => {
             {["Supervisor", "Operator", "Labors", "Other"].map((role, idx) => (
               <div className="role-selection-row" key={role}>
                 <label>
-                  {idx + 1}. {role === "Labors" ? "Labors" : role}:
+                  {idx + 1}. {role}:
                 </label>
                 <button
                   type="button"
@@ -294,8 +293,8 @@ const EventCreate = () => {
                   onClick={() => setActiveRolePopup(role)}
                   style={{
                     backgroundColor:
-                      role === "Supervisor" ? "#e67e22" : "#1e40af",
-                  }}
+                      role === "Supervisor" ? "#f39c12" : "#1e40af",
+                  }} // Supervisor ට වෙනස් පාටක්
                 >
                   {formData.operators[currentCat][role]?.length || 0} Selected +
                 </button>
