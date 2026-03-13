@@ -104,36 +104,52 @@ const AddItem = () => {
       const response = await fetch(
         `https://imagine-entertaintment.onrender.com/api/items/${barcode.trim()}`,
       );
+
       if (response.status === 404) {
-        setErrorMessage("Item not found in barcode database.");
+        setErrorMessage("Item not found in database.");
         setShowErrorModal(true);
         setBarcode("");
         return;
       }
+
       const item = await response.json();
+
       if (response.ok) {
-        if (item.category.toLowerCase() !== category.toLowerCase()) {
-          playSound("error");
-          setErrorMessage(
-            `Category mismatch: Item is ${item.category.toUpperCase()}.`,
-          );
-          setShowErrorModal(true);
-          setBarcode("");
-          return;
-        }
-        if (scannedItems.find((i) => i.barcodeID === item.barcodeID)) {
+        // 1. දැනටමත් ස්කෑන් කර ඇත්දැයි බැලීම (සියලුම කැටගරි වල)
+        // සටහන: ඔබට මුළු Event එකේම equipmentList එක මෙහිදී පරීක්ෂා කළ හැක
+        const alreadyScanned = scannedItems.find(
+          (i) => i.barcodeID === item.barcodeID,
+        );
+        if (alreadyScanned) {
           playSound("error");
           setErrorMessage(`Item already scanned: ${item.itemName}`);
-
           setShowErrorModal(true);
           setBarcode("");
           return;
         }
+
+        // 2. භාණ්ඩය කුමන කැටගරියක වුවත් එය පිළිගැනීම
         playSound("success");
+
+        // පිටුවේ පෙන්වන ලැයිස්තුවට එක් කිරීම (Optional: මෙය පසුව Category එක අනුව Filter වේ)
         const newItemsList = [...scannedItems, item];
         setScannedItems(newItemsList);
+
+        // 3. DATABASE එකට AUTO-SAVE කිරීම
+        // මෙහිදී වැදගත් වන්නේ භාණ්ඩයේම කැටගරිය (item.category) භාවිතා කිරීමයි
+        await fetch(
+          `https://imagine-entertaintment.onrender.com/api/events/${eventId}/save-equipment`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              items: [item], // අලුත් භාණ්ඩය පමණක් යැවීම හෝ සම්පූර්ණ ලැයිස්තුව
+              category: item.category, // පිටුවේ කැටගරිය නොව භාණ්ඩයේම කැටගරිය මෙහි යවන්න
+            }),
+          },
+        );
+
         setBarcode("");
-        await autoSaveToDatabase(newItemsList);
       }
     } catch (err) {
       setErrorMessage("Server error. Please check your connection.");
