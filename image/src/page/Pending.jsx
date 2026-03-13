@@ -70,13 +70,24 @@ const PendingEvents = () => {
       Operator: "Operator",
       Labors: "Labor",
       Other: "Other",
+      Supervisor: "Supervisor", // Supervisor එක් කළා
     };
     const dbRole = roleMap[role] || role;
-    return dbMembers.filter(
-      (m) =>
+
+    return dbMembers.filter((m) => {
+      // 1. තෝරාගත් Category එකේ (LED, Light, etc.) අදාළ Role එක ඇති අය
+      const isMainCatMember =
         m.category.toLowerCase() === currentCat?.toLowerCase() &&
-        m.position === dbRole,
-    );
+        m.position === dbRole;
+
+      // 2. Office Category එකෙන් ගන්නේ Supervisor ලා පමණි (Supervisor Role එකේදී පමණක්)
+      const isOfficeSupervisor =
+        role === "Supervisor" &&
+        m.category === "Office" &&
+        m.position === "Supervisor";
+
+      return isMainCatMember || isOfficeSupervisor;
+    });
   };
 
   const handleMultiToggle = (role, name) => {
@@ -384,7 +395,7 @@ const PendingEvents = () => {
           </table>
         </div>
 
-        {/* --- TEAM DASHBOARD POPUP (From Member Button) --- */}
+        {/* --- TEAM DASHBOARD POPUP --- */}
         {showOpModal && selectedEvent && (
           <div className="op-modal-overlay" style={{ zIndex: 1100 }}>
             <div className="op-modal large-modal">
@@ -402,7 +413,7 @@ const PendingEvents = () => {
                   style={{ padding: "5px" }}
                 >
                   {Object.keys(selectedEvent.categories || {})
-                    .filter((c) => selectedEvent.categories[c] === true) // False Categories ඉවත් කරයි
+                    .filter((c) => selectedEvent.categories[c] === true)
                     .map((c) => (
                       <option key={c} value={c}>
                         {c.toUpperCase()}
@@ -410,21 +421,32 @@ const PendingEvents = () => {
                     ))}
                 </select>
               </div>
-              {["Operator", "Labors", "Other"].map((role, idx) => (
-                <div className="role-selection-row" key={role}>
-                  <label>
-                    {idx + 1}. {role}s:
-                  </label>
-                  <button
-                    type="button"
-                    className="role-pop-btn"
-                    onClick={() => setActiveRolePopup(role)}
-                  >
-                    {selectedEvent.operators?.[currentCat]?.[role]?.length || 0}{" "}
-                    Selected +
-                  </button>
-                </div>
-              ))}
+
+              {/* "Supervisor" පේළිය ලැයිස්තුවට එක් කළා */}
+              {["Supervisor", "Operator", "Labors", "Other"].map(
+                (role, idx) => (
+                  <div className="role-selection-row" key={role}>
+                    <label>
+                      {idx + 1}. {role}:
+                    </label>
+                    <button
+                      type="button"
+                      className="role-pop-btn"
+                      onClick={() => setActiveRolePopup(role)}
+                      /* Supervisor සඳහා වෙනස් වර්ණයක් ලබා දිය හැක */
+                      style={{
+                        backgroundColor:
+                          role === "Supervisor" ? "#f39c12" : "#1e40af",
+                      }}
+                    >
+                      {selectedEvent.operators?.[currentCat]?.[role]?.length ||
+                        0}{" "}
+                      Selected +
+                    </button>
+                  </div>
+                ),
+              )}
+
               <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
                 <button className="op-done-btn" onClick={handleUpdate}>
                   Save & Close
